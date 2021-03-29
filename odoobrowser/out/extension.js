@@ -1,9 +1,22 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = void 0;
+exports.activate = exports.deactivate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require("vscode");
+const WebRequest = require("web-request");
+const browse_files_for_xmlids_1 = require("./browse_files_for_xmlids");
+function deactivate() { }
+exports.deactivate = deactivate;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
@@ -13,50 +26,44 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    const cmd_hello = vscode.commands.registerCommand('odoobrowser.helloWorld', () => {
+    const cmdShowXmlIds = vscode.commands.registerCommand('odoobrowser.showXmlIds', () => {
         // The code you place here will be executed every time your command is executed
         // Display a message box to the user
         const panel = vscode.window.createWebviewPanel('catCoding', 'Cat Coding', vscode.ViewColumn.One, {});
         panel.title = "Odoo Browser";
-        panel.webview.html = getWebviewContent("http://10.10.173.111:8620/xmlids");
+        const url = "http://10.10.173.111:8620/xmlids";
+        (function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                var result = yield WebRequest.get(url);
+                panel.webview.html = result.content;
+            });
+        })();
         // And schedule updates to the content every second
         vscode.window.showInformationMessage('Hello World from OdooBrowser!');
     });
-    const cmd_bye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
+    const cmdBye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
         vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
     });
     const cmd2 = vscode.commands.registerCommand('odoobrowser.command2', () => {
-        vscode.window.showInformationMessage('cmd2');
+        (function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                var result = yield WebRequest.get('http://www.google.com/');
+                console.log(result.content);
+            });
+        })();
     });
-    context.subscriptions.push(cmd_hello, cmd_bye, cmd2);
+    const cmdUpdateXmlIds = vscode.commands.registerCommand('odoobrowser.updateXmlIds', () => {
+        (function () {
+            return __awaiter(this, void 0, void 0, function* () {
+                let ids = yield browse_files_for_xmlids_1.getXmlIds();
+                for (var x of ids) {
+                    console.log(x.name);
+                }
+            });
+        });
+    });
+    ;
+    context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds);
 }
 exports.activate = activate;
-function getWebviewContent(url) {
-    return `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cat Coding</title>
-  </head>
-  <script
-  src="https://code.jquery.com/jquery-3.6.0.min.js"
-  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-  crossorigin="anonymous"></script>
-  <script>
-  $(document).ready(function() {
-	  $("span.test").test("HI");
-
-  });
-  })
-  </script>
-  <body>
-	${url}
-	<span class='test'></span>
-  </body>
-  </html>`;
-}
-// this method is called when your extension is deactivated
-function deactivate() { }
-exports.deactivate = deactivate;
 //# sourceMappingURL=extension.js.map

@@ -11,14 +11,21 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:odoobrowser.helloWorld"
+    "onCommand:odoobrowser.showXmlIds",
+    "onCommand:odoobrowser.byeWorld",
+    "onCommand:odoobrowser.command2",
+    "onCommand:odoobrowser.updateXmlIds"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "odoobrowser.helloWorld",
-        "title": "Hello World"
+        "command": "odoobrowser.showXmlIds",
+        "title": "Odoo Show XmlIds"
+      },
+      {
+        "command": "odoobrowser.updateXmlIds",
+        "title": "Odoo Update XmlIds"
       },
       {
         "command": "odoobrowser.byeWorld",
@@ -43,6 +50,7 @@
     "@types/mocha": "^8.0.4",
     "@types/node": "^12.11.7",
     "@types/vscode": "^1.54.0",
+    "@types/xmldom": "^0.1.30",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
     "eslint": "^7.19.0",
@@ -52,6 +60,11 @@
     "vscode-test": "^1.5.0"
   },
   "dependencies": {
-    "python-shell": "^2.0.3"
+    "fast-xml-parser": "^3.19.0",
+    "python-shell": "^2.0.3",
+    "web-request": "^1.0.7",
+    "xmldom": "^0.5.0",
+    "xmldom-ts": "^0.3.1",
+    "xpath": "^0.0.32"
   }
 }

@@ -2,7 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
+import * as WebRequest from 'web-request';
+import { getXmlIds } from './browse_files_for_xmlids';
 
+
+export function deactivate() {}
 
 
 // this method is called when your extension is activated
@@ -16,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const cmd_hello = vscode.commands.registerCommand('odoobrowser.helloWorld', () => {
+	const cmdShowXmlIds = vscode.commands.registerCommand('odoobrowser.showXmlIds', () => {
 		// The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
@@ -27,49 +31,43 @@ export function activate(context: vscode.ExtensionContext) {
 			{}
 		);
 	
-		panel.title = "Odoo Browser"
-		panel.webview.html = getWebviewContent("http://10.10.173.111:8620/xmlids");
+		panel.title = "Odoo Browser";
+		const url = "http://10.10.173.111:8620/xmlids";
+		(async function () {
+			var result = await WebRequest.get(url);
+			panel.webview.html = result.content;
+		})();
 	
 		  // And schedule updates to the content every second
 		vscode.window.showInformationMessage('Hello World from OdooBrowser!');
 	});
 
-	const cmd_bye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
+	const cmdBye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
 		vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
 	});
 
 	const cmd2 = vscode.commands.registerCommand('odoobrowser.command2', () => {
-		vscode.window.showInformationMessage('cmd2');
+		(async function () {
+			var result = await WebRequest.get('http://www.google.com/');
+			console.log(result.content);
+		})();
+
 	});
-	context.subscriptions.push(cmd_hello, cmd_bye, cmd2);
+
+	const cmdUpdateXmlIds = vscode.commands.registerCommand('odoobrowser.updateXmlIds', () => {
+		(async function() {
+			let ids = await getXmlIds();
+
+			for (var x of ids) {
+				console.log(x.name);
+			}
+		});
+
+	});
+;
+
+
+	context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds);
 
 }
 
-function getWebviewContent(url: string) {
-	return `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-	  <meta charset="UTF-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Cat Coding</title>
-  </head>
-  <script
-  src="https://code.jquery.com/jquery-3.6.0.min.js"
-  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-  crossorigin="anonymous"></script>
-  <script>
-  $(document).ready(function() {
-	  $("span.test").test("HI");
-
-  });
-  })
-  </script>
-  <body>
-	${url}
-	<span class='test'></span>
-  </body>
-  </html>`;
-  }
-
-// this method is called when your extension is deactivated
-export function deactivate() {}
