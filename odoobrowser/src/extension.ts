@@ -226,6 +226,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
 		var relCurrentFilename = getActiveRelativePath();
+		var odooBin = getOdooFrameworkBin();
+		exec(odooBin + ' update-ast --filename ' + relCurrentFilename, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+			if (err) {
+				vscode.window.showErrorMessage(err);
+			} else {
+				vscode.window.showInformationMessage("Finished updating AST-file:" + relCurrentFilename);
+			}
+		});
 	});
 
 	context.subscriptions.push(

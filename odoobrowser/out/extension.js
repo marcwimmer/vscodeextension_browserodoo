@@ -205,6 +205,15 @@ function activate(context) {
     });
     const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
         var relCurrentFilename = getActiveRelativePath();
+        var odooBin = getOdooFrameworkBin();
+        exec(odooBin + ' update-ast --filename ' + relCurrentFilename, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+            if (err) {
+                vscode.window.showErrorMessage(err);
+            }
+            else {
+                vscode.window.showInformationMessage("Finished updating AST-file:" + relCurrentFilename);
+            }
+        });
     });
     context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile);
 }
