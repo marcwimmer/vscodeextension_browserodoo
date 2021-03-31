@@ -1,14 +1,80 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+// https://github.com/jtanx/ctagsx/blob/master/extension.js
 import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
 import * as WebRequest from 'web-request';
 import { getXmlIds } from './browse_files_for_xmlids';
-import { posix } from 'path';
-
+import { posix, relative, basename } from 'path';
+import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
+import * as path from 'path'; // In NodeJS: 'const fs = require('fs')'
+const { exec } = require('child_process');
 
 
 export function deactivate() {}
+
+function getOdooFrameworkBin() {
+	const candidates = [
+		"~/odoo/odoo",
+		"/opt/odoo/odoo"
+	];
+	for (let candidate of candidates) {
+		if (fs.existsSync(candidate)) {
+			return candidate;
+		}
+	}
+
+	vscode.window.showErrorMessage("Odoo framework not found: " + candidates);
+	throw new Error("Odoo framework not found.");
+}
+
+function getModuleOfFilePath(relFilepath: string): string {
+
+	let current = relFilepath;
+	while (true) {
+		current = path.dirname(current);
+		if (fs.existsSync(current + "/__manifest__.py")) {
+			return basename(current);
+		}
+		if (current === "/") {
+			break;
+		}
+	}
+	throw new Error("No module found.");
+}
+
+function getAbsoluteRootPath() {
+	if (!vscode.workspace.workspaceFolders) {
+		vscode.window.showInformationMessage("No folder or workspace opened.");
+		return "";
+	}
+	const folderUri = vscode.workspace?.workspaceFolders[0]?.uri;
+	return folderUri.path;
+
+}
+
+function writeDebugFile(data: string) {
+	const buffer = Buffer.from(data, 'utf8');
+	const fileUri = vscode.Uri.parse(posix.join(getAbsoluteRootPath(), '.debug'));
+	vscode.workspace.fs.writeFile(fileUri, buffer);
+}
+
+function getActiveRelativePath(): string {
+	const currentFilename = vscode.window.activeTextEditor.document.fileName;
+	const folderUri = getAbsoluteRootPath();
+	var relCurrentFilename = relative(folderUri, currentFilename);
+	return relCurrentFilename;
+
+}
+
+function getActiveLine(): number {
+	if (!vscode.window.activeTextEditor) {
+		vscode.window.showInformationMessage("No folder or workspace opened.");
+		return 0;
+	}
+
+	return vscode.window.activeTextEditor.selection.active.line;
+}
 
 
 // this method is called when your extension is activated
@@ -49,10 +115,67 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const cmd2 = vscode.commands.registerCommand('odoobrowser.command2', () => {
-		(async function () {
-			var result = await WebRequest.get('http://www.google.com/');
-			console.log(result.content);
-		})();
+
+		let items: vscode.QuickPickItem[] = [];
+		let myitems = [];
+		myitems.push("Marc");
+		myitems.push("Marc1");
+		myitems.push("Marc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("Andrea");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("PeterMarc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+		myitems.push("Marc");
+
+		for (let index = 0; index < myitems.length; index++) {
+		  let item = myitems[index];
+		  items.push({ 
+			label: item, 
+			description: item});
+		}
+		vscode.window.showQuickPick(items).then(selection => {
+			// the user canceled the selection
+			if (!selection) {
+			  return;
+			}
+		  
+			// the user selected some item. You could use `selection.name` too
+			switch (selection.description) {
+			  case "onItem": 
+				//doSomething();
+				break;
+			  case "anotherItem": 
+				//doSomethingElse();
+				break;
+			  //.....
+			  default:
+				break;
+			}
+		  });
 
 	});
 
@@ -67,19 +190,56 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const cmdUpdateModule = vscode.commands.registerCommand("odoo_debugcommand.update_module", () => {
-		const data = "hallo123";
-		const buffer = Buffer.from(data, 'utf8');
-		if (!vscode.workspace.workspaceFolders) {
-			return vscode.window.showInformationMessage("No folder or workspace opened.");
-		}
+		const relCurrentFilename = getActiveRelativePath();
+		const module = getModuleOfFilePath(relCurrentFilename);
+		writeDebugFile("update_module:" + module);
 
-		const folderUri = vscode.workspace.workspaceFolders[0].uri;
-		const fileUri = folderUri.with({path: posix.join(folderUri.path, 'testfile.txt')});
-		vscode.workspace.fs.writeFile(fileUri, buffer);
 	});
 
-	context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds);
-	context.subscriptions.push(cmdUpdateModule);
+	const cmdRunUnittest = vscode.commands.registerCommand("odoo_debugcommand.run_unittest", () => {
+		var relCurrentFilename = getActiveRelativePath();
+		writeDebugFile("unit_test:" + relCurrentFilename);
+	});
+
+	const cmdUpdateView = vscode.commands.registerCommand("odoo_debugcommand.update_view", () => {
+		var relCurrentFilename = getActiveRelativePath();
+		let lineno = getActiveLine();
+		writeDebugFile("update_view_in_db:" + relCurrentFilename + ":" + String(lineno));
+	});
+
+	const cmdRestart = vscode.commands.registerCommand("odoo_debugcommand.restart", () => {
+		var relCurrentFilename = getActiveRelativePath();
+		writeDebugFile("restart");
+	});
+
+	const cmdUpdateAstAll = vscode.commands.registerCommand("odoo_debugcommand.update_ast_all", () => {
+		// var relCurrentFilename = getActiveRelativePath();
+		var odooBin = getOdooFrameworkBin();
+		exec(odooBin + ' update-ast', {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+			if (err) {
+				vscode.window.showErrorMessage(err);
+			} else {
+				vscode.window.showInformationMessage("Finished updating AST.");
+			}
+		});
+	});
+
+	const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
+		var relCurrentFilename = getActiveRelativePath();
+	});
+
+	context.subscriptions.push(
+		cmdShowXmlIds,
+		cmdBye,
+		cmd2,
+		cmdUpdateXmlIds,
+		cmdUpdateModule,
+		cmdRestart,
+		cmdRunUnittest,
+		cmdUpdateView,
+		cmdUpdateAstAll,
+		cmdUpdateAstFile,
+	);
 
 }
 

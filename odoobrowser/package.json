@@ -15,7 +15,12 @@
     "onCommand:odoobrowser.byeWorld",
     "onCommand:odoobrowser.command2",
     "onCommand:odoobrowser.updateXmlIds",
-    "onCommand:odoo_debugcommand.update_module"
+    "onCommand:odoo_debugcommand.update_module",
+    "onCommand:odoo_debugcommand.run_unittest",
+    "onCommand:odoo_debugcommand.restart",
+    "onCommand:odoo_debugcommand.update_view",
+    "onCommand:odoo_debugcommand.update_ast_all",
+    "onCommand:odoo_debugcommand.update_ast_current_file"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -39,6 +44,26 @@
       {
         "command": "odoo_debugcommand.update_module",
         "title": "Odoo Debug: Flag File Update Module"
+      },
+      {
+        "command": "odoo_debugcommand.run_unittest",
+        "title": "Odoo Debug: Run Unit Test"
+      },
+      {
+        "command": "odoo_debugcommand.restart",
+        "title": "Odoo Debug: Restart"
+      },
+      {
+        "command": "odoo_debugcommand.update_view",
+        "title": "Odoo Debug: Update View"
+      },
+      {
+        "command": "odoo_debugcommand.update_ast_current_file",
+        "title": "Odoo Debug: Update Ast Current File"
+      },
+      {
+        "command": "odoo_debugcommand.update_ast_all",
+        "title": "Odoo Debug: Update Ast All"
       }
     ]
   },
