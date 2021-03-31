@@ -19,7 +19,8 @@ const browse_files_for_xmlids_1 = require("./browse_files_for_xmlids");
 const path_1 = require("path");
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
 const path = require("path"); // In NodeJS: 'const fs = require('fs')'
-const { exec } = require('child_process');
+const child_process_1 = require("child_process");
+const lineReader = require("line-reader");
 function deactivate() { }
 exports.deactivate = deactivate;
 function getOdooFrameworkBin() {
@@ -102,65 +103,47 @@ function activate(context) {
     const cmdBye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
         vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
     });
-    const cmd2 = vscode.commands.registerCommand('odoobrowser.command2', () => {
-        let items = [];
-        let myitems = [];
-        myitems.push("Marc");
-        myitems.push("Marc1");
-        myitems.push("Marc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("Andrea");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("PeterMarc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        myitems.push("Marc");
-        for (let index = 0; index < myitems.length; index++) {
-            let item = myitems[index];
-            items.push({
-                label: item,
-                description: item
-            });
-        }
-        vscode.window.showQuickPick(items).then(selection => {
-            // the user canceled the selection
-            if (!selection) {
+    const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+            let astPath = path.join(rootPath, '.odoo.ast');
+            if (!fs.existsSync(astPath)) {
+                vscode.window.showErrorMessage("Please create an AST File before.");
                 return;
             }
-            // the user selected some item. You could use `selection.name` too
-            switch (selection.description) {
-                case "onItem":
-                    //doSomething();
-                    break;
-                case "anotherItem":
-                    //doSomethingElse();
-                    break;
-                //.....
-                default:
-                    break;
+            let items = [];
+            let myitems = [];
+            yield lineReader.eachLine(astPath, function (line) {
+                if (!line.length) {
+                    return;
+                }
+                myitems.push(line);
+            });
+            for (let index = 0; index < myitems.length; index++) {
+                let item = myitems[index];
+                items.push({
+                    label: item,
+                    description: item
+                });
             }
+            vscode.window.showQuickPick(items).then(selection => {
+                // the user canceled the selection
+                if (!selection) {
+                    return;
+                }
+                // the user selected some item. You could use `selection.name` too
+                switch (selection.description) {
+                    case "onItem":
+                        //doSomething();
+                        break;
+                    case "anotherItem":
+                        //doSomethingElse();
+                        break;
+                    //.....
+                    default:
+                        break;
+                }
+            });
         });
     });
     const cmdUpdateXmlIds = vscode.commands.registerCommand('odoobrowser.updateXmlIds', () => {
@@ -194,7 +177,7 @@ function activate(context) {
     const cmdUpdateAstAll = vscode.commands.registerCommand("odoo_debugcommand.update_ast_all", () => {
         // var relCurrentFilename = getActiveRelativePath();
         var odooBin = getOdooFrameworkBin();
-        exec(odooBin + ' update-ast', { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+        child_process_1.exec(odooBin + ' update-ast', { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
             if (err) {
                 vscode.window.showErrorMessage(err);
             }
@@ -206,7 +189,7 @@ function activate(context) {
     const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
         var relCurrentFilename = getActiveRelativePath();
         var odooBin = getOdooFrameworkBin();
-        exec(odooBin + ' update-ast --filename ' + relCurrentFilename, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+        child_process_1.exec(odooBin + ' update-ast --filename ' + relCurrentFilename, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
             if (err) {
                 vscode.window.showErrorMessage(err);
             }
@@ -215,7 +198,7 @@ function activate(context) {
             }
         });
     });
-    context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile);
+    context.subscriptions.push(cmdShowXmlIds, cmdBye, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile, cmdGoto);
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

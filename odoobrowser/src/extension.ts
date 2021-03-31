@@ -8,8 +8,8 @@ import { getXmlIds } from './browse_files_for_xmlids';
 import { posix, relative, basename } from 'path';
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 import * as path from 'path'; // In NodeJS: 'const fs = require('fs')'
-const { exec } = require('child_process');
-
+import { exec } from 'child_process';
+import * as lineReader from 'line-reader';
 
 export function deactivate() {}
 
@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 			panel.webview.html = result.content;
 		})();
 	
-		  // And schedule updates to the content every second
+		// And schedule updates to the content every second
 		vscode.window.showInformationMessage('Hello World from OdooBrowser!');
 	});
 
@@ -114,42 +114,24 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
 	});
 
-	const cmd2 = vscode.commands.registerCommand('odoobrowser.command2', () => {
+	const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', async function() {
+
+		let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+		let astPath = path.join(rootPath, '.odoo.ast');
+
+		if (!fs.existsSync(astPath)) {
+			vscode.window.showErrorMessage("Please create an AST File before.");
+			return;
+		}
 
 		let items: vscode.QuickPickItem[] = [];
-		let myitems = [];
-		myitems.push("Marc");
-		myitems.push("Marc1");
-		myitems.push("Marc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("Andrea");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("PeterMarc");
-		myitems.push("Marc");
-		myitems.push("Marc");
-		myitems.push("Marc");
-		myitems.push("Marc");
-		myitems.push("Marc");
-		myitems.push("Marc");
-		myitems.push("Marc");
+		let myitems:string[] = [];
+		await lineReader.eachLine(astPath, function(line: string) {
+			if (!line.length) {
+				return;
+			}
+			myitems.push(line);
+		});
 
 		for (let index = 0; index < myitems.length; index++) {
 		  let item = myitems[index];
@@ -239,7 +221,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		cmdShowXmlIds,
 		cmdBye,
-		cmd2,
 		cmdUpdateXmlIds,
 		cmdUpdateModule,
 		cmdRestart,
@@ -247,6 +228,7 @@ export function activate(context: vscode.ExtensionContext) {
 		cmdUpdateView,
 		cmdUpdateAstAll,
 		cmdUpdateAstFile,
+		cmdGoto
 	);
 
 }
