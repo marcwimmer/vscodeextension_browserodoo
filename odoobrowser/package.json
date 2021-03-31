@@ -14,7 +14,8 @@
     "onCommand:odoobrowser.showXmlIds",
     "onCommand:odoobrowser.byeWorld",
     "onCommand:odoobrowser.command2",
-    "onCommand:odoobrowser.updateXmlIds"
+    "onCommand:odoobrowser.updateXmlIds",
+    "onCommand:odoo_debugcommand.update_module"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -34,6 +35,10 @@
       {
         "command": "odoobrowser.command2",
         "title": "Command2"
+      },
+      {
+        "command": "odoo_debugcommand.update_module",
+        "title": "Odoo Debug: Flag File Update Module"
       }
     ]
   },

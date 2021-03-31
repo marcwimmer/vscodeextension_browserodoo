@@ -15,6 +15,7 @@ exports.activate = exports.deactivate = void 0;
 const vscode = require("vscode");
 const WebRequest = require("web-request");
 const browse_files_for_xmlids_1 = require("./browse_files_for_xmlids");
+const path_1 = require("path");
 function deactivate() { }
 exports.deactivate = deactivate;
 // this method is called when your extension is activated
@@ -62,8 +63,18 @@ function activate(context) {
             });
         });
     });
-    ;
+    const cmdUpdateModule = vscode.commands.registerCommand("odoo_debugcommand.update_module", () => {
+        const data = "hallo123";
+        const buffer = Buffer.from(data, 'utf8');
+        if (!vscode.workspace.workspaceFolders) {
+            return vscode.window.showInformationMessage("No folder or workspace opened.");
+        }
+        const folderUri = vscode.workspace.workspaceFolders[0].uri;
+        const fileUri = folderUri.with({ path: path_1.posix.join(folderUri.path, 'testfile.txt') });
+        vscode.workspace.fs.writeFile(fileUri, buffer);
+    });
     context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds);
+    context.subscriptions.push(cmdUpdateModule);
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map

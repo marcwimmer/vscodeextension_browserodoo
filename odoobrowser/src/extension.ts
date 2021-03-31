@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
 import * as WebRequest from 'web-request';
 import { getXmlIds } from './browse_files_for_xmlids';
+import { posix } from 'path';
+
 
 
 export function deactivate() {}
@@ -62,12 +64,22 @@ export function activate(context: vscode.ExtensionContext) {
 				console.log(x.name);
 			}
 		});
-
 	});
-;
 
+	const cmdUpdateModule = vscode.commands.registerCommand("odoo_debugcommand.update_module", () => {
+		const data = "hallo123";
+		const buffer = Buffer.from(data, 'utf8');
+		if (!vscode.workspace.workspaceFolders) {
+			return vscode.window.showInformationMessage("No folder or workspace opened.");
+		}
+
+		const folderUri = vscode.workspace.workspaceFolders[0].uri;
+		const fileUri = folderUri.with({path: posix.join(folderUri.path, 'testfile.txt')});
+		vscode.workspace.fs.writeFile(fileUri, buffer);
+	});
 
 	context.subscriptions.push(cmdShowXmlIds, cmdBye, cmd2, cmdUpdateXmlIds);
+	context.subscriptions.push(cmdUpdateModule);
 
 }
 
