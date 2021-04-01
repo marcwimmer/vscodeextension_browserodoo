@@ -63,10 +63,9 @@ function writeDebugFile(data) {
     const fileUri = vscode.Uri.parse(path_1.posix.join(getAbsoluteRootPath(), '.debug'));
     vscode.workspace.fs.writeFile(fileUri, buffer);
 }
-function getActiveRelativePath() {
-    const currentFilename = vscode.window.activeTextEditor.document.fileName;
+function getActiveRelativePath(filename = vscode.window.activeTextEditor.document.fileName) {
     const folderUri = getAbsoluteRootPath();
-    var relCurrentFilename = path_1.relative(folderUri, currentFilename);
+    var relCurrentFilename = path_1.relative(folderUri, filename);
     return relCurrentFilename;
 }
 function getActiveLine() {
@@ -176,29 +175,36 @@ function activate(context) {
         var relCurrentFilename = getActiveRelativePath();
         writeDebugFile("restart");
     });
+    function updateAst(filename) {
+        let odooBin = getOdooFrameworkBin();
+        let command = odooBin + " update-ast ";
+        if (filename && filename.length > 0) {
+            command += ' --filename ' + filename;
+        }
+        child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+            if (err) {
+                vscode.window.showErrorMessage(err);
+            }
+            else {
+                if (!filename || !filename.length) {
+                    vscode.window.showInformationMessage("Finished updating AST");
+                }
+            }
+        });
+    }
     const cmdUpdateAstAll = vscode.commands.registerCommand("odoo_debugcommand.update_ast_all", () => {
         // var relCurrentFilename = getActiveRelativePath();
         var odooBin = getOdooFrameworkBin();
-        child_process_1.exec(odooBin + ' update-ast', { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
-            if (err) {
-                vscode.window.showErrorMessage(err);
-            }
-            else {
-                vscode.window.showInformationMessage("Finished updating AST.");
-            }
-        });
+        updateAst(null);
     });
     const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
         var relCurrentFilename = getActiveRelativePath();
-        var odooBin = getOdooFrameworkBin();
-        child_process_1.exec(odooBin + ' update-ast --filename ' + relCurrentFilename, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
-            if (err) {
-                vscode.window.showErrorMessage(err);
-            }
-            else {
-                vscode.window.showInformationMessage("Finished updating AST-file:" + relCurrentFilename);
-            }
-        });
+        updateAst(relCurrentFilename);
+    });
+    vscode.workspace.onDidSaveTextDocument((document) => {
+        // update ast on change
+        const filename = getActiveRelativePath(document.fileName);
+        updateAst(filename);
     });
     context.subscriptions.push(cmdShowXmlIds, cmdBye, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile, cmdGoto);
 }

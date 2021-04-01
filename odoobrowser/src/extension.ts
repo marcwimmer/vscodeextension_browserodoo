@@ -61,10 +61,9 @@ function writeDebugFile(data: string) {
 	vscode.workspace.fs.writeFile(fileUri, buffer);
 }
 
-function getActiveRelativePath(): string {
-	const currentFilename = vscode.window.activeTextEditor.document.fileName;
+function getActiveRelativePath(filename: string=vscode.window.activeTextEditor.document.fileName): string {
 	const folderUri = getAbsoluteRootPath();
-	var relCurrentFilename = relative(folderUri, currentFilename);
+	var relCurrentFilename = relative(folderUri, filename);
 	return relCurrentFilename;
 
 }
@@ -204,29 +203,42 @@ export function activate(context: vscode.ExtensionContext) {
 		writeDebugFile("restart");
 	});
 
-	const cmdUpdateAstAll = vscode.commands.registerCommand("odoo_debugcommand.update_ast_all", () => {
-		// var relCurrentFilename = getActiveRelativePath();
-		var odooBin = getOdooFrameworkBin();
-		exec(odooBin + ' update-ast', {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+	function updateAst(filename:string) {
+		let odooBin = getOdooFrameworkBin();
+		let command = odooBin + " update-ast ";
+		if (filename && filename.length > 0) {
+			command +=  ' --filename ' + filename;
+		}
+		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
 			if (err) {
 				vscode.window.showErrorMessage(err);
 			} else {
-				vscode.window.showInformationMessage("Finished updating AST.");
+				if (!filename || !filename.length) {
+					vscode.window.showInformationMessage("Finished updating AST");
+				}
 			}
 		});
+
+	}
+
+	const cmdUpdateAstAll = vscode.commands.registerCommand("odoo_debugcommand.update_ast_all", () => {
+		// var relCurrentFilename = getActiveRelativePath();
+		var odooBin = getOdooFrameworkBin();
+		updateAst(null);
 	});
 
 	const cmdUpdateAstFile = vscode.commands.registerCommand("odoo_debugcommand.update_ast_current_file", () => {
 		var relCurrentFilename = getActiveRelativePath();
-		var odooBin = getOdooFrameworkBin();
-		exec(odooBin + ' update-ast --filename ' + relCurrentFilename, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
-			if (err) {
-				vscode.window.showErrorMessage(err);
-			} else {
-				vscode.window.showInformationMessage("Finished updating AST-file:" + relCurrentFilename);
-			}
-		});
+		updateAst(relCurrentFilename);
 	});
+
+
+	vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+		// update ast on change
+		const filename = getActiveRelativePath(document.fileName);
+		updateAst(filename);
+	});
+
 
 	context.subscriptions.push(
 		cmdShowXmlIds,

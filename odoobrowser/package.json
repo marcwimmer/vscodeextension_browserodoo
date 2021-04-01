@@ -2,7 +2,7 @@
   "name": "odoobrowser",
   "displayName": "OdooBrowser",
   "description": "Browser Odoo Models, XmlIds",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -10,19 +10,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:odoobrowser.showXmlIds",
-    "onCommand:odoobrowser.byeWorld",
-    "onCommand:odoobrowser.command2",
-    "onCommand:odoobrowser.updateXmlIds",
-    "onCommand:odoobrowser.Goto",
-    "onCommand:odoo_debugcommand.update_module",
-    "onCommand:odoo_debugcommand.run_unittest",
-    "onCommand:odoo_debugcommand.restart",
-    "onCommand:odoo_debugcommand.update_view",
-    "onCommand:odoo_debugcommand.update_ast_all",
-    "onCommand:odoo_debugcommand.update_ast_current_file"
-  ],
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
