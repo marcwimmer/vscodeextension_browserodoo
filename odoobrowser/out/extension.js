@@ -1,4 +1,8 @@
 "use strict";
+// The module 'vscode' contains the VS Code extensibility API
+// Import the module and reference it with the alias vscode in your code below
+// https://github.com/jtanx/ctagsx/blob/master/extension.js
+// const offset = vscode.workspace.getConfiguration('scrollToCursor').get<number>('offset')!;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,9 +14,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = exports.deactivate = void 0;
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-// https://github.com/jtanx/ctagsx/blob/master/extension.js
 const vscode = require("vscode");
 const WebRequest = require("web-request");
 const browse_files_for_xmlids_1 = require("./browse_files_for_xmlids");
@@ -20,7 +21,6 @@ const path_1 = require("path");
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
 const path = require("path"); // In NodeJS: 'const fs = require('fs')'
 const child_process_1 = require("child_process");
-const lineReader = require("line-reader");
 function deactivate() { }
 exports.deactivate = deactivate;
 function getOdooFrameworkBin() {
@@ -103,46 +103,48 @@ function activate(context) {
     const cmdBye = vscode.commands.registerCommand('odoobrowser.byeWorld', () => {
         vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
     });
-    const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-            let astPath = path.join(rootPath, '.odoo.ast');
-            if (!fs.existsSync(astPath)) {
-                vscode.window.showErrorMessage("Please create an AST File before.");
+    function readLines(path) {
+        let result = [];
+        const data = fs.readFileSync(path, 'UTF-8');
+        const lines = data.split(/\r?\n/);
+        return lines;
+    }
+    const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', () => {
+        let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+        let astPath = path.join(rootPath, '.odoo.ast');
+        if (!fs.existsSync(astPath)) {
+            vscode.window.showErrorMessage("Please create an AST File before.");
+            return;
+        }
+        let items = [];
+        const myitems = readLines(astPath);
+        for (let index = 0; index < myitems.length; index++) {
+            let item = myitems[index];
+            const label = item.split(":::")[0];
+            items.push({
+                label: label,
+                description: item
+            });
+        }
+        vscode.window.showQuickPick(items).then(selection => {
+            // the user canceled the selection
+            if (!selection) {
                 return;
             }
-            let items = [];
-            let myitems = [];
-            yield lineReader.eachLine(astPath, function (line) {
-                if (!line.length) {
-                    return;
-                }
-                myitems.push(line);
-            });
-            for (let index = 0; index < myitems.length; index++) {
-                let item = myitems[index];
-                items.push({
-                    label: item,
-                    description: item
-                });
-            }
-            vscode.window.showQuickPick(items).then(selection => {
-                // the user canceled the selection
-                if (!selection) {
-                    return;
-                }
-                // the user selected some item. You could use `selection.name` too
-                switch (selection.description) {
-                    case "onItem":
-                        //doSomething();
-                        break;
-                    case "anotherItem":
-                        //doSomethingElse();
-                        break;
-                    //.....
-                    default:
-                        break;
-                }
+            const fileInfo = selection.description.split(":::")[1].split("::");
+            const filePath = fileInfo[0];
+            const lineNo = Number(fileInfo[1]) - 1;
+            const absFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, filePath);
+            const uri = vscode.Uri.file(absFilePath);
+            vscode.commands.executeCommand("vscode.open", uri);
+            const editor = vscode.window.activeTextEditor;
+            const position = editor.selection.active;
+            var newPosition = position.with(lineNo, 0);
+            var newSelection = new vscode.Selection(newPosition, newPosition);
+            editor.selection = newSelection;
+            vscode.commands.executeCommand('revealLine', {
+                lineNumber: lineNo,
+                at: 'center',
             });
         });
     });

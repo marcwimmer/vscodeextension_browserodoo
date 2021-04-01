@@ -1,6 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 // https://github.com/jtanx/ctagsx/blob/master/extension.js
+// const offset = vscode.workspace.getConfiguration('scrollToCursor').get<number>('offset')!;
+
 import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
 import * as WebRequest from 'web-request';
@@ -114,7 +116,14 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Good Bye from OdooBrowser!');
 	});
 
-	const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', async function() {
+	function readLines(path: string) {
+		let result:string[] = [];
+		const data = fs.readFileSync(path, 'UTF-8');
+		const lines = data.split(/\r?\n/);
+		return lines;
+	}
+
+	const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', () => {
 
 		let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
 		let astPath = path.join(rootPath, '.odoo.ast');
@@ -125,39 +134,40 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		let items: vscode.QuickPickItem[] = [];
-		let myitems:string[] = [];
-		await lineReader.eachLine(astPath, function(line: string) {
-			if (!line.length) {
-				return;
-			}
-			myitems.push(line);
-		});
+		const myitems:string[] = readLines(astPath);
 
 		for (let index = 0; index < myitems.length; index++) {
-		  let item = myitems[index];
-		  items.push({ 
-			label: item, 
-			description: item});
+			let item = myitems[index];
+			const label = item.split(":::")[0];
+			items.push({ 
+				label: label, 
+				description: item
+			});
 		}
 		vscode.window.showQuickPick(items).then(selection => {
 			// the user canceled the selection
 			if (!selection) {
-			  return;
+				return;
 			}
-		  
-			// the user selected some item. You could use `selection.name` too
-			switch (selection.description) {
-			  case "onItem": 
-				//doSomething();
-				break;
-			  case "anotherItem": 
-				//doSomethingElse();
-				break;
-			  //.....
-			  default:
-				break;
-			}
-		  });
+
+			const fileInfo = selection.description.split(":::")[1].split("::");
+			const filePath = fileInfo[0];
+			const lineNo = Number(fileInfo[1]) - 1;
+			const absFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, filePath);
+
+			const uri = vscode.Uri.file(absFilePath);
+			vscode.commands.executeCommand<vscode.TextDocumentShowOptions>("vscode.open", uri);
+
+			const editor = vscode.window.activeTextEditor;
+			const position = editor.selection.active;
+			var newPosition = position.with(lineNo, 0);
+			var newSelection = new vscode.Selection(newPosition, newPosition);
+			editor.selection = newSelection;
+			vscode.commands.executeCommand('revealLine', {
+				lineNumber: lineNo,
+				at: 'center',
+			});
+		});
 
 	});
 
