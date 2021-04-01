@@ -2,6 +2,10 @@
   "name": "odoobrowser",
   "displayName": "OdooBrowser",
   "description": "Browser Odoo Models, XmlIds",
+  "repository": {
+    "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
+
+  },
   "version": "0.0.2",
   "publisher": "Marc-ChristianWimmer",
   "engines": {

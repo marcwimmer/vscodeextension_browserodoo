@@ -176,6 +176,10 @@ function activate(context) {
         writeDebugFile("restart");
     });
     function updateAst(filename) {
+        const manifestFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, "MANIFEST");
+        if (!fs.existsSync(manifestFilePath)) {
+            return;
+        }
         let odooBin = getOdooFrameworkBin();
         let command = odooBin + " update-ast ";
         if (filename && filename.length > 0) {

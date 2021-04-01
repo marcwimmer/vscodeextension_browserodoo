@@ -204,6 +204,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	function updateAst(filename:string) {
+
+		const manifestFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, "MANIFEST");
+		if (!fs.existsSync(manifestFilePath)) {
+			return;
+		}
+
 		let odooBin = getOdooFrameworkBin();
 		let command = odooBin + " update-ast ";
 		if (filename && filename.length > 0) {
