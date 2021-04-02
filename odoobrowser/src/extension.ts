@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 // https://github.com/jtanx/ctagsx/blob/master/extension.js
 // const offset = vscode.workspace.getConfiguration('scrollToCursor').get<number>('offset')!;
+// https://github.com/tatosjb/vscode-fuzzy-search/blob/master/src/fuzzy-search.ts
 
 import * as vscode from 'vscode';
 import {PythonShell} from 'python-shell';
