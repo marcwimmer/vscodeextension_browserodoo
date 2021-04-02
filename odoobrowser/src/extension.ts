@@ -17,6 +17,17 @@ import { getVSCodeDownloadUrl } from 'vscode-test/out/util';
 
 export function deactivate() {}
 
+function getExtensionRootFolder() {
+	return vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')?.extensionPath ?? "";
+}
+
+function getPreviewScript() {
+	return path.join(
+		getExtensionRootFolder(),
+		'src/preview_fzf.py'
+	);
+}
+
 function getOdooFrameworkBin() {
 	const candidates = [
 		"~/odoo/odoo",
@@ -129,7 +140,6 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.workspace.workspaceFolders[0].uri.path,
 			'.selected'
 		);
-
 	}
 
 	const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', () => {
@@ -141,8 +151,11 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
+		const previewScript = getPreviewScript();
+
 		const terminal = ensureTerminalExists('godoo');
-		terminal.sendText("cat .odoo.ast | fzf > " + _getPathOfSelectedFzf() + "; exit 0");
+		terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" + 
+			"python " + previewScript + " {}\" > " + _getPathOfSelectedFzf() + "; exit 0");
 		terminal.show(true);
 		// onDidCloseTerminal catches the exit event
 	});

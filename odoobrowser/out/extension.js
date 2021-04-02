@@ -24,6 +24,13 @@ const path = require("path"); // In NodeJS: 'const fs = require('fs')'
 const child_process_1 = require("child_process");
 function deactivate() { }
 exports.deactivate = deactivate;
+function getExtensionRootFolder() {
+    var _a, _b;
+    return (_b = (_a = vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')) === null || _a === void 0 ? void 0 : _a.extensionPath) !== null && _b !== void 0 ? _b : "";
+}
+function getPreviewScript() {
+    return path.join(getExtensionRootFolder(), 'src/preview_fzf.py');
+}
 function getOdooFrameworkBin() {
     const candidates = [
         "~/odoo/odoo",
@@ -119,8 +126,10 @@ function activate(context) {
             vscode.window.showErrorMessage("Please create an AST File before.");
             return;
         }
+        const previewScript = getPreviewScript();
         const terminal = ensureTerminalExists('godoo');
-        terminal.sendText("cat .odoo.ast | fzf > " + _getPathOfSelectedFzf() + "; exit 0");
+        terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" +
+            "python " + previewScript + " {}\" > " + _getPathOfSelectedFzf() + "; exit 0");
         terminal.show(true);
         // onDidCloseTerminal catches the exit event
     });
