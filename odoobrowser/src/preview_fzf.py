@@ -23,10 +23,5 @@ lines = lines[start:end]
 
 i = start
 for line in lines:
-    text = f"{str(i + 1).zfill(2)}\t{line}"
-    click.secho(
-        text,
-        fg='red',
-        bold=lineno - 1 == i
-    )
+    print(f"{str(i + 1).zfill(2)}\t{line}")
     i += 1
