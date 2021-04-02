@@ -13,6 +13,7 @@ import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 import * as path from 'path'; // In NodeJS: 'const fs = require('fs')'
 import { exec } from 'child_process';
 import * as lineReader from 'line-reader';
+import { getVSCodeDownloadUrl } from 'vscode-test/out/util';
 
 export function deactivate() {}
 
@@ -123,7 +124,63 @@ export function activate(context: vscode.ExtensionContext) {
 		return lines;
 	}
 
+	function _getPathOfSelectedFzf() {
+		return path.join(
+			vscode.workspace.workspaceFolders[0].uri.path,
+			'.selected'
+		);
+
+	}
+
 	const cmdGoto = vscode.commands.registerCommand('odoobrowser.Goto', () => {
+		let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+		let astPath = path.join(rootPath, '.odoo.ast');
+
+		if (!fs.existsSync(astPath)) {
+			vscode.window.showErrorMessage("Please create an AST File before.");
+			return;
+		}
+
+		const terminal = ensureTerminalExists('godoo');
+		terminal.sendText("cat .odoo.ast | fzf > " + _getPathOfSelectedFzf() + "; exit 0");
+		terminal.show(true);
+		// onDidCloseTerminal catches the exit event
+	});
+
+	vscode.window.onDidCloseTerminal(term => {
+		if (term.name === 'godoo') {
+			if (!term.exitStatus.code) {
+				console.log("Closed the godoo");
+				const data = fs.readFileSync(_getPathOfSelectedFzf(), 'UTF-8').trim();
+				const fileLocation = data.split(":::")[1];
+				const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+				const filePath = path.join(rootPath, fileLocation.split(":")[0]);
+				const lineNo = Number(data.split(":")[1]);
+				editFile(filePath, lineNo);
+			}
+		}
+
+	});
+
+	function ensureTerminalExists(name: string): vscode.Terminal {
+		if ((<any>vscode.window).terminals.length === 0) {
+			vscode.window.showErrorMessage('No active terminals');
+			return null;
+		}
+
+		let found:any = null;
+		for (let terminal of vscode.window.terminals) {
+			if (terminal.name === name) {
+				found = terminal;
+			}
+		}
+		if (found) {
+			return found;
+		}
+		return vscode.window.createTerminal(name);
+	}
+
+	const cmdGotoInefficient = vscode.commands.registerCommand('odoobrowser.GotoOld', () => {
 
 		let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
 		let astPath = path.join(rootPath, '.odoo.ast');
@@ -155,21 +212,25 @@ export function activate(context: vscode.ExtensionContext) {
 			const lineNo = Number(fileInfo[1]) - 1;
 			const absFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, filePath);
 
-			const uri = vscode.Uri.file(absFilePath);
-			vscode.commands.executeCommand<vscode.TextDocumentShowOptions>("vscode.open", uri);
-
-			const editor = vscode.window.activeTextEditor;
-			const position = editor.selection.active;
-			var newPosition = position.with(lineNo, 0);
-			var newSelection = new vscode.Selection(newPosition, newPosition);
-			editor.selection = newSelection;
-			vscode.commands.executeCommand('revealLine', {
-				lineNumber: lineNo,
-				at: 'center',
-			});
+			editFile(absFilePath, lineNo);
 		});
 
 	});
+
+	function editFile(path: string, lineNo: number) { 
+		const uri = vscode.Uri.file(path);
+		vscode.commands.executeCommand<vscode.TextDocumentShowOptions>("vscode.open", uri);
+
+		const editor = vscode.window.activeTextEditor;
+		const position = editor.selection.active;
+		var newPosition = position.with(lineNo, 0);
+		var newSelection = new vscode.Selection(newPosition, newPosition);
+		editor.selection = newSelection;
+		vscode.commands.executeCommand('revealLine', {
+			lineNumber: lineNo,
+			at: 'center',
+		});
+	}
 
 	const cmdUpdateXmlIds = vscode.commands.registerCommand('odoobrowser.updateXmlIds', () => {
 		(async function() {
