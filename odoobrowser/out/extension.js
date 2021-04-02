@@ -138,10 +138,6 @@ function activate(context) {
         }
     });
     function ensureTerminalExists(name) {
-        if (vscode.window.terminals.length === 0) {
-            vscode.window.showErrorMessage('No active terminals');
-            return null;
-        }
         let found = null;
         for (let terminal of vscode.window.terminals) {
             if (terminal.name === name) {

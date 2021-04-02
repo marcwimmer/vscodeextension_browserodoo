@@ -4,6 +4,6 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [0.0.4]
 
 - Initial release

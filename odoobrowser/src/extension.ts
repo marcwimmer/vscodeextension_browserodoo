@@ -159,14 +159,9 @@ export function activate(context: vscode.ExtensionContext) {
 				editFile(filePath, lineNo);
 			}
 		}
-
 	});
 
 	function ensureTerminalExists(name: string): vscode.Terminal {
-		if ((<any>vscode.window).terminals.length === 0) {
-			vscode.window.showErrorMessage('No active terminals');
-			return null;
-		}
 
 		let found:any = null;
 		for (let terminal of vscode.window.terminals) {
