@@ -19,15 +19,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "odoobrowser.showXmlIds",
-        "title": "Odoo Show XmlIds"
-      },
-      {
         "command": "odoobrowser.updateXmlIds",
         "title": "Odoo Update XmlIds"
       },
       {
-        "command": "odoobrowser.Goto",
+        "command": "odoobrowser.goto",
         "title": "Godoo [Goto]"
       },
       {
@@ -35,15 +31,19 @@
         "title": "Odoo Update Module File"
       },
       {
+        "command": "odoo_debugcommand.updateView",
+        "title": "Odoo Update View"
+      },
+      {
         "command": "odoo_debugcommand.showXmlIds",
         "title": "Odoo Show XmlIds"
       },
       {
-        "command": "odoo_debugcommand.update_module",
+        "command": "odoo_debugcommand.updateModule",
         "title": "Odoo Debug: Flag File Update Module"
       },
       {
-        "command": "odoo_debugcommand.run_unittest",
+        "command": "odoo_debugcommand.runUnittest",
         "title": "Odoo Debug: Run Unit Test"
       },
       {
@@ -51,27 +51,57 @@
         "title": "Odoo Debug: Restart"
       },
       {
-        "command": "odoo_debugcommand.update_view",
+        "command": "odoo_debugcommand.updateView",
         "title": "Odoo Debug: Update View"
       },
       {
-        "command": "odoo_debugcommand.update_ast_current_file",
+        "command": "odoo_debugcommand.updateAstCurrentFile",
         "title": "Odoo Debug: Update Ast Current File"
       },
       {
-        "command": "odoo_debugcommand.update_ast_all",
+        "command": "odoo_debugcommand.updateAstAll",
         "title": "Odoo Debug: Update Ast All"
       },
       {
-        "command": "odoo_debugcommand.updateModuleFile",
-        "title": "Odoo Debug: Update Module File"
+        "command": "odoo_debugcommand.exportI18n",
+        "title": "Odoo Debug: Export I18N"
       }
     ],
     "keybindings": [
       {
-          "command": "odoo_debugcommand.updateModuleFile",
-          "key": "ctrl+alt+l",
+          "command": "odoo_browser.updateModuleFile",
+          "key": "ctrl+u ctrl+m ctrl+f",
           "mac": "cmd+u cmd+m cmd+f"
+      },
+      {
+          "command": "odoo_debugcommand.updateView",
+          "key": "ctrl+u ctrl+v",
+          "mac": "cmd+u cmd+v"
+      },
+      {
+          "command": "odoo_debugcommand.restart",
+          "key": "ctrl+o ctrl+r",
+          "mac": "cmd+o cmd+r"
+      },
+      {
+          "command": "odoo_debugcommand.runUnittest",
+          "key": "ctrl+r ctrl+t",
+          "mac": "cmd+r cmd+t"
+      },
+      {
+          "command": "odoo_debugcommand.exportI18n",
+          "key": "ctrl+e ctrl+l",
+          "mac": "cmd+e cmd+l"
+      },
+      {
+          "command": "odoo_debugcommand.goto",
+          "key": "ctrl+o ctrl+g",
+          "mac": "cmd+o cmd+g"
+      },
+      {
+          "command": "odoo_debugcommand.gotoInherited",
+          "key": "ctrl+g ctrl+i",
+          "mac": "cmd+g cmd+i"
       }
     ]
   },
