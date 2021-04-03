@@ -19,10 +19,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "odoobrowser.updateXmlIds",
-        "title": "Odoo Update XmlIds"
-      },
-      {
         "command": "odoobrowser.goto",
         "title": "Godoo [Goto]"
       },
@@ -37,10 +33,6 @@
       {
         "command": "odoo_debugcommand.updateView",
         "title": "Odoo Update View"
-      },
-      {
-        "command": "odoo_debugcommand.showXmlIds",
-        "title": "Odoo Show XmlIds"
       },
       {
         "command": "odoo_debugcommand.updateModule",
@@ -73,7 +65,7 @@
     ],
     "keybindings": [
       {
-          "command": "odoo_browser.updateModuleFile",
+          "command": "odoo_debugcommand.updateModuleFile",
           "key": "ctrl+u ctrl+m ctrl+f",
           "mac": "cmd+u cmd+m cmd+f"
       },
@@ -98,12 +90,12 @@
           "mac": "cmd+e cmd+l"
       },
       {
-          "command": "odoo_debugcommand.goto",
+          "command": "odoobrowser.goto",
           "key": "ctrl+o ctrl+g",
           "mac": "cmd+o cmd+g"
       },
       {
-          "command": "odoo_browser.gotoInherited",
+          "command": "odoobrowser.gotoInherited",
           "key": "ctrl+g ctrl+i",
           "mac": "cmd+g cmd+i"
       }
