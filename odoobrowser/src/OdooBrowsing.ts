@@ -31,6 +31,12 @@ export class OdooBrowser {
                 OdooBrowser.updateModuleFile,
             )
         );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'odoobrowser.gotoInherited',
+                OdooBrowser.gotoInherited,
+            )
+        );
         OdooBrowser.registerFzfGodo();
         OdooBrowser.registerDidSaveDocument();
     }
@@ -88,9 +94,32 @@ export class OdooBrowser {
 				}
 			}
 		});
-
 	}
-	
+
+    private static gotoInherited() {
+        const lineNo = VSCodeTools.getActiveLine();
+        const odooBin = Tools.getOdooFrameworkBin();
+		let command = odooBin + " goto-inherited ";
+        const filename =  Tools.getActiveRelativePath();
+        command +=  ' --filepath ' + filename;
+        command +=  ' --lineno ' + lineNo;
+
+		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+			if (err) {
+				vscode.window.showErrorMessage(err);
+			} else {
+                const result = stdout.trim().split("\n");
+                const lastLine = result[result.length - 1];
+                if (lastLine.indexOf("FILEPATH") < 0) {
+                    return;
+                }
+                const filepath = lastLine.split(":")[1];
+                const lineNo = Number(lastLine.split(":")[2]);
+
+                VSCodeTools.editFile(filepath, lineNo);
+			}
+		});
+    }
 
 	private static updateAstAll() {
         // var relCurrentFilename = getActiveRelativePath();

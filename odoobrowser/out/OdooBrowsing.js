@@ -12,6 +12,7 @@ class OdooBrowser {
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateAstAll', OdooBrowser.updateAstAll));
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateAstCurrentFile', OdooBrowser.updateAstFile));
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateModuleFile', OdooBrowser.updateModuleFile));
+        context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.gotoInherited', OdooBrowser.gotoInherited));
         OdooBrowser.registerFzfGodo();
         OdooBrowser.registerDidSaveDocument();
     }
@@ -58,6 +59,29 @@ class OdooBrowser {
                 if (!filename || !filename.length) {
                     vscode.window.showInformationMessage("Finished updating AST");
                 }
+            }
+        });
+    }
+    static gotoInherited() {
+        const lineNo = tools_1.VSCodeTools.getActiveLine();
+        const odooBin = tools_1.Tools.getOdooFrameworkBin();
+        let command = odooBin + " goto-inherited ";
+        const filename = tools_1.Tools.getActiveRelativePath();
+        command += ' --filepath ' + filename;
+        command += ' --lineno ' + lineNo;
+        child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+            if (err) {
+                vscode.window.showErrorMessage(err);
+            }
+            else {
+                const result = stdout.trim().split("\n");
+                const lastLine = result[result.length - 1];
+                if (lastLine.indexOf("FILEPATH") < 0) {
+                    return;
+                }
+                const filepath = lastLine.split(":")[1];
+                const lineNo = Number(lastLine.split(":")[2]);
+                tools_1.VSCodeTools.editFile(filepath, lineNo);
             }
         });
     }
