@@ -108,6 +108,7 @@ class OdooBrowser {
         terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" +
             "python " + previewScript + " {}\" > " + tools_1.Tools._getPathOfSelectedFzf() + "; exit 0");
         terminal.show(true);
+        vscode.commands.executeCommand('workbench.action.terminal.focus');
         // onDidCloseTerminal catches the exit event
     }
     static updateModuleFile() {
