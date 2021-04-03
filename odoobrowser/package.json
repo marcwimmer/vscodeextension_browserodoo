@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -27,12 +27,16 @@
         "title": "Odoo Update XmlIds"
       },
       {
-        "command": "odoobrowser.byeWorld",
-        "title": "Good Bye World"
-      },
-      {
         "command": "odoobrowser.Goto",
         "title": "Godoo [Goto]"
+      },
+      {
+        "command": "odoo_debugcommand.updateModuleFile",
+        "title": "Odoo Update Module File"
+      },
+      {
+        "command": "odoo_debugcommand.showXmlIds",
+        "title": "Odoo Show XmlIds"
       },
       {
         "command": "odoo_debugcommand.update_module",
@@ -57,6 +61,17 @@
       {
         "command": "odoo_debugcommand.update_ast_all",
         "title": "Odoo Debug: Update Ast All"
+      },
+      {
+        "command": "odoo_debugcommand.updateModuleFile",
+        "title": "Odoo Debug: Update Module File"
+      }
+    ],
+    "keybindings": [
+      {
+          "command": "odoo_debugcommand.updateModuleFile",
+          "key": "ctrl+alt+l",
+          "mac": "cmd+u cmd+m cmd+f"
       }
     ]
   },

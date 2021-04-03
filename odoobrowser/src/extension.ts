@@ -45,6 +45,13 @@ function getOdooFrameworkBin() {
 
 function getModuleOfFilePath(relFilepath: string): string {
 
+	if (relFilepath[0] != '/') {
+		relFilepath = path.join(
+			vscode.workspace.workspaceFolders[0].uri.path,
+			relFilepath,
+		);
+
+	}
 	let current = relFilepath;
 	while (true) {
 		current = path.dirname(current);
@@ -308,6 +315,23 @@ export function activate(context: vscode.ExtensionContext) {
 		updateAst(relCurrentFilename);
 	});
 
+	const cmdUpdateModuleFile = vscode.commands.registerCommand("odoo_debugcommand.updateModuleFile", () => {
+		var relCurrentFilename = getActiveRelativePath();
+		updateAst(relCurrentFilename);
+		let odooBin = getOdooFrameworkBin();
+		let module = getModuleOfFilePath(relCurrentFilename);
+		if (!module || !module.length) {
+			return;
+		}
+		let command = odooBin + " update-module-file " + module;
+		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+			if (err) {
+				vscode.window.showErrorMessage(err);
+			} else {
+				//vscode.window.showInformationMessage("Update odoo module file of " + module);
+			}
+		});
+	});
 
 	vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
 		// update ast on change
@@ -326,7 +350,8 @@ export function activate(context: vscode.ExtensionContext) {
 		cmdUpdateView,
 		cmdUpdateAstAll,
 		cmdUpdateAstFile,
-		cmdGoto
+		cmdGoto,
+		cmdUpdateModuleFile,
 	);
 
 }

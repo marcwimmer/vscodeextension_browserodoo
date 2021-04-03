@@ -45,6 +45,9 @@ function getOdooFrameworkBin() {
     throw new Error("Odoo framework not found.");
 }
 function getModuleOfFilePath(relFilepath) {
+    if (relFilepath[0] != '/') {
+        relFilepath = path.join(vscode.workspace.workspaceFolders[0].uri.path, relFilepath);
+    }
     let current = relFilepath;
     while (true) {
         current = path.dirname(current);
@@ -258,12 +261,30 @@ function activate(context) {
         var relCurrentFilename = getActiveRelativePath();
         updateAst(relCurrentFilename);
     });
+    const cmdUpdateModuleFile = vscode.commands.registerCommand("odoo_debugcommand.updateModuleFile", () => {
+        var relCurrentFilename = getActiveRelativePath();
+        updateAst(relCurrentFilename);
+        let odooBin = getOdooFrameworkBin();
+        let module = getModuleOfFilePath(relCurrentFilename);
+        if (!module || !module.length) {
+            return;
+        }
+        let command = odooBin + " update-module-file " + module;
+        child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+            if (err) {
+                vscode.window.showErrorMessage(err);
+            }
+            else {
+                //vscode.window.showInformationMessage("Update odoo module file of " + module);
+            }
+        });
+    });
     vscode.workspace.onDidSaveTextDocument((document) => {
         // update ast on change
         const filename = getActiveRelativePath(document.fileName);
         updateAst(filename);
     });
-    context.subscriptions.push(cmdShowXmlIds, cmdBye, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile, cmdGoto);
+    context.subscriptions.push(cmdShowXmlIds, cmdBye, cmdUpdateXmlIds, cmdUpdateModule, cmdRestart, cmdRunUnittest, cmdUpdateView, cmdUpdateAstAll, cmdUpdateAstFile, cmdGoto, cmdUpdateModuleFile);
 }
 exports.activate = activate;
 //# sourceMappingURL=extension.js.map
