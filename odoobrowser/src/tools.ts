@@ -93,6 +93,19 @@ export class Tools {
 		);
 	}
 
+    public static hasOdooManifest(): boolean {
+		const manifestFilePath = path.join(
+            vscode.workspace.workspaceFolders[0].uri.path,
+            "MANIFEST"
+            );
+
+		if (!fs.existsSync(manifestFilePath)) {
+			return false;
+		}
+
+        return true;
+    }
+
 }
 
 export class VSCodeTools {
@@ -143,6 +156,5 @@ export class VSCodeTools {
         return folderUri.path;
 
     }
-
 
 }

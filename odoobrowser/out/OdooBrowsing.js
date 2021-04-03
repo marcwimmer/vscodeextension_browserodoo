@@ -34,6 +34,9 @@ class OdooBrowser {
     static registerDidSaveDocument() {
         vscode.workspace.onDidSaveTextDocument((document) => {
             // update ast on change
+            if (!tools_1.Tools.hasOdooManifest()) {
+                return;
+            }
             const filename = tools_1.Tools.getActiveRelativePath(document.fileName);
             OdooBrowser._updateAst(filename);
             if (filename.indexOf('/i18n/') >= 0) {
@@ -42,8 +45,7 @@ class OdooBrowser {
         });
     }
     static _updateAst(filename) {
-        const manifestFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, "MANIFEST");
-        if (!fs.existsSync(manifestFilePath)) {
+        if (!tools_1.Tools.hasOdooManifest()) {
             return;
         }
         let odooBin = tools_1.Tools.getOdooFrameworkBin();

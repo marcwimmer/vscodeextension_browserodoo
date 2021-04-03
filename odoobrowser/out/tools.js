@@ -74,6 +74,13 @@ class Tools {
     static _getPathOfSelectedFzf() {
         return path.join(vscode.workspace.workspaceFolders[0].uri.path, '.selected');
     }
+    static hasOdooManifest() {
+        const manifestFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.path, "MANIFEST");
+        if (!fs.existsSync(manifestFilePath)) {
+            return false;
+        }
+        return true;
+    }
 }
 exports.Tools = Tools;
 class VSCodeTools {

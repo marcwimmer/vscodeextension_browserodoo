@@ -60,6 +60,9 @@ export class OdooBrowser {
     private static registerDidSaveDocument() {
         vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
             // update ast on change
+            if (!Tools.hasOdooManifest()) {
+                return;
+            }
             const filename = Tools.getActiveRelativePath(document.fileName);
             OdooBrowser._updateAst(filename);
 
@@ -71,14 +74,9 @@ export class OdooBrowser {
 
 	private static _updateAst(filename: string) {
 
-		const manifestFilePath = path.join(
-            vscode.workspace.workspaceFolders[0].uri.path,
-            "MANIFEST"
-            );
-
-		if (!fs.existsSync(manifestFilePath)) {
-			return;
-		}
+        if (!Tools.hasOdooManifest()) {
+            return;
+        }
 
 		let odooBin = Tools.getOdooFrameworkBin();
 		let command = odooBin + " update-ast ";
