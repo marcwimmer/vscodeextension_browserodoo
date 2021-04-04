@@ -131,10 +131,17 @@ export class VSCodeTools {
 		var newPosition = position.with(lineNo, 0);
 		var newSelection = new vscode.Selection(newPosition, newPosition);
 		editor.selection = newSelection;
-		vscode.commands.executeCommand('revealLine', {
-			lineNumber: lineNo,
-			at: 'center',
-		});
+		vscode.commands.executeCommand(
+            'editor.action.goToLocations',
+            uri,
+            editor.selection.start,
+            [
+                new vscode.Range(newPosition, newPosition)
+
+            ],
+            'goto',
+            "Not found",
+		);
 	}
 
     public static getActiveLine(): number {
