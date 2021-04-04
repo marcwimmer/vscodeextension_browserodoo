@@ -36,29 +36,29 @@ export class OdooDebugging {
     }
 
 	private static updateModule() {
-        const relCurrentFilename = Tools.getActiveRelativePath();
+        const relCurrentFilename = VSCodeTools.getActiveRelativePath();
         const module = Tools.getModuleOfFilePath(relCurrentFilename);
         Tools.writeDebugFile("update_module:" + module);
     }
 
     private static restart() {
-        var relCurrentFilename = Tools.getActiveRelativePath();
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         Tools.writeDebugFile("restart");
     }
 
 	private static exportI18n() {
-        const relCurrentFilename = Tools.getActiveRelativePath();
+        const relCurrentFilename = VSCodeTools.getActiveRelativePath();
         const module = Tools.getModuleOfFilePath(relCurrentFilename);
         Tools.writeDebugFile("export_i18n:de_DE:" + module);
     }
 
 	private static runUnittest() {
-        var relCurrentFilename = Tools.getActiveRelativePath();
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         Tools.writeDebugFile("unit_test:" + relCurrentFilename);
     }
 
 	private static updateView() {
-        var relCurrentFilename = Tools.getActiveRelativePath();
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         let lineno = VSCodeTools.getActiveLine();
         Tools.writeDebugFile("update_view_in_db:" + relCurrentFilename + ":" + String(lineno));
     }

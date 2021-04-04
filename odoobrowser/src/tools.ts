@@ -72,15 +72,7 @@ export class Tools {
         vscode.workspace.fs.writeFile(fileUri, buffer);
     }
 
-    public static getActiveRelativePath(filename: string=vscode.window.activeTextEditor.document.fileName): string {
-        const folderUri = VSCodeTools.getAbsoluteRootPath();
-        var relCurrentFilename = relative(folderUri, filename);
-        return relCurrentFilename;
-
-    }
-
 	public static readLines(path: string) {
-		let result:string[] = [];
 		const data = fs.readFileSync(path, 'UTF-8');
 		const lines = data.split(/\r?\n/);
 		return lines;
@@ -109,6 +101,13 @@ export class Tools {
 }
 
 export class VSCodeTools {
+    public static getActiveRelativePath(filename: string=vscode.window.activeTextEditor.document.fileName): string {
+        const folderUri = VSCodeTools.getAbsoluteRootPath();
+        var relCurrentFilename = relative(folderUri, filename);
+        return relCurrentFilename;
+
+    }
+
 	public static ensureTerminalExists(name: string): vscode.Terminal {
 
 		let found:any = null;

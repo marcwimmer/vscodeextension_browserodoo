@@ -25,7 +25,7 @@ class OdooBrowser {
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
-                    const lineNo = Number(data.split(":")[1]);
+                    const lineNo = Number(fileLocation.split(":")[1]);
                     tools_1.VSCodeTools.editFile(filePath, lineNo);
                 }
             }
@@ -37,7 +37,7 @@ class OdooBrowser {
             if (!tools_1.Tools.hasOdooManifest()) {
                 return;
             }
-            const filename = tools_1.Tools.getActiveRelativePath(document.fileName);
+            const filename = tools_1.VSCodeTools.getActiveRelativePath(document.fileName);
             OdooBrowser._updateAst(filename);
             if (filename.indexOf('/i18n/') >= 0) {
                 tools_1.Tools.writeDebugFile("import_i18n:de_DE:" + filename);
@@ -68,7 +68,7 @@ class OdooBrowser {
         const lineNo = tools_1.VSCodeTools.getActiveLine();
         const odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " goto-inherited ";
-        const filename = tools_1.Tools.getActiveRelativePath();
+        const filename = tools_1.VSCodeTools.getActiveRelativePath();
         command += ' --filepath ' + filename;
         command += ' --lineno ' + lineNo;
         child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
@@ -93,7 +93,7 @@ class OdooBrowser {
         OdooBrowser._updateAst(null);
     }
     static updateAstFile() {
-        var relCurrentFilename = tools_1.Tools.getActiveRelativePath();
+        var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
         OdooBrowser._updateAst(relCurrentFilename);
     }
     static goto() {
@@ -107,12 +107,11 @@ class OdooBrowser {
         const terminal = tools_1.VSCodeTools.ensureTerminalExists('godoo');
         terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" +
             "python " + previewScript + " {}\" > " + tools_1.Tools._getPathOfSelectedFzf() + "; exit 0");
-        terminal.show(true);
-        vscode.commands.executeCommand('workbench.action.terminal.focus');
+        terminal.show(false);
         // onDidCloseTerminal catches the exit event
     }
     static updateModuleFile() {
-        var relCurrentFilename = tools_1.Tools.getActiveRelativePath();
+        var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
         let odooBin = tools_1.Tools.getOdooFrameworkBin();
         let module = tools_1.Tools.getModuleOfFilePath(relCurrentFilename);
         if (!module || !module.length) {

@@ -60,13 +60,7 @@ class Tools {
         const fileUri = vscode.Uri.parse(path_1.posix.join(VSCodeTools.getAbsoluteRootPath(), '.debug'));
         vscode.workspace.fs.writeFile(fileUri, buffer);
     }
-    static getActiveRelativePath(filename = vscode.window.activeTextEditor.document.fileName) {
-        const folderUri = VSCodeTools.getAbsoluteRootPath();
-        var relCurrentFilename = path_1.relative(folderUri, filename);
-        return relCurrentFilename;
-    }
     static readLines(path) {
-        let result = [];
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
         return lines;
@@ -84,6 +78,11 @@ class Tools {
 }
 exports.Tools = Tools;
 class VSCodeTools {
+    static getActiveRelativePath(filename = vscode.window.activeTextEditor.document.fileName) {
+        const folderUri = VSCodeTools.getAbsoluteRootPath();
+        var relCurrentFilename = path_1.relative(folderUri, filename);
+        return relCurrentFilename;
+    }
     static ensureTerminalExists(name) {
         let found = null;
         for (let terminal of vscode.window.terminals) {

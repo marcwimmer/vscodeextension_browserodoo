@@ -50,7 +50,7 @@ export class OdooBrowser {
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
-                    const lineNo = Number(data.split(":")[1]);
+                    const lineNo = Number(fileLocation.split(":")[1]);
                     VSCodeTools.editFile(filePath, lineNo);
                 }
             }
@@ -63,7 +63,7 @@ export class OdooBrowser {
             if (!Tools.hasOdooManifest()) {
                 return;
             }
-            const filename = Tools.getActiveRelativePath(document.fileName);
+            const filename = VSCodeTools.getActiveRelativePath(document.fileName);
             OdooBrowser._updateAst(filename);
 
             if (filename.indexOf('/i18n/') >= 0) {
@@ -98,7 +98,7 @@ export class OdooBrowser {
         const lineNo = VSCodeTools.getActiveLine();
         const odooBin = Tools.getOdooFrameworkBin();
 		let command = odooBin + " goto-inherited ";
-        const filename =  Tools.getActiveRelativePath();
+        const filename =  VSCodeTools.getActiveRelativePath();
         command +=  ' --filepath ' + filename;
         command +=  ' --lineno ' + lineNo;
 
@@ -126,7 +126,7 @@ export class OdooBrowser {
     }
 
 	private static updateAstFile() {
-        var relCurrentFilename = Tools.getActiveRelativePath();
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         OdooBrowser._updateAst(relCurrentFilename);
     }
 
@@ -144,13 +144,12 @@ export class OdooBrowser {
         const terminal = VSCodeTools.ensureTerminalExists('godoo');
         terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" + 
             "python " + previewScript + " {}\" > " + Tools._getPathOfSelectedFzf() + "; exit 0");
-        terminal.show(true);
-        vscode.commands.executeCommand('workbench.action.terminal.focus');
+        terminal.show(false);
         // onDidCloseTerminal catches the exit event
     }
 
     private static  updateModuleFile() {
-        var relCurrentFilename = Tools.getActiveRelativePath();
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         let odooBin = Tools.getOdooFrameworkBin();
         let module = Tools.getModuleOfFilePath(relCurrentFilename);
         if (!module || !module.length) {
