@@ -24,7 +24,7 @@ class Tools {
         });
     }
     static getPreviewScript() {
-        return path.join(Tools.getExtensionRootFolder(), 'src/preview_fzf.py');
+        return path.join(Tools.getExtensionRootFolder(), 'out/preview_fzf.py');
     }
     static getOdooFrameworkBin() {
         const candidates = [

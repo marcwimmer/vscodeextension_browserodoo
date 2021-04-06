@@ -25,7 +25,7 @@ export class Tools {
     public static getPreviewScript() {
         return path.join(
             Tools.getExtensionRootFolder(),
-            'src/preview_fzf.py'
+            'out/preview_fzf.py'
         );
     }
 
