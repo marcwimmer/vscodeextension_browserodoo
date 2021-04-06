@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OdooBrowser = void 0;
 const vscode = require("vscode");
@@ -8,6 +17,7 @@ const tools_1 = require("./tools");
 const child_process_1 = require("child_process");
 class OdooBrowser {
     static register(context) {
+        context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.newModule', OdooBrowser.newModule));
         context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.goto', OdooBrowser.goto));
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateAstAll', OdooBrowser.updateAstAll));
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateAstCurrentFile', OdooBrowser.updateAstFile));
@@ -53,16 +63,7 @@ class OdooBrowser {
         if (filename && filename.length > 0) {
             command += ' --filename ' + filename;
         }
-        child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
-            if (err) {
-                vscode.window.showErrorMessage(err);
-            }
-            else {
-                if (!filename || !filename.length) {
-                    vscode.window.showInformationMessage("Finished updating AST");
-                }
-            }
-        });
+        tools_1.Tools.execCommand(command, "Finished updating AST");
     }
     static gotoInherited() {
         const lineNo = tools_1.VSCodeTools.getActiveLine();
@@ -119,6 +120,31 @@ class OdooBrowser {
         }
         let command = odooBin + " update-module-file " + module;
         tools_1.Tools.execCommand(command, "Update odoo module file of " + module);
+    }
+    static newModule() {
+        (() => __awaiter(this, void 0, void 0, function* () {
+            yield vscode.commands.executeCommand('copyFilePath');
+            let folder = yield vscode.env.clipboard.readText(); // returns a string
+            if (!folder || !folder.length) {
+                return;
+            }
+            if (!tools_1.Tools.hasOdooManifest()) {
+                vscode.window.showErrorMessage("No MANIFEST file found.");
+                return;
+            }
+            const moduleName = yield vscode.window.showInputBox({
+                'ignoreFocusOut': true,
+                'prompt': "Please enter a module name"
+            });
+            if (!moduleName) {
+                return;
+            }
+            console.log(folder);
+            let odooBin = tools_1.Tools.getOdooFrameworkBin();
+            let command = odooBin + " make-module  --name " + moduleName + " -p " + folder;
+            tools_1.Tools.execCommand(command, "Make new module: " + moduleName);
+            // get current version
+        }))();
     }
 }
 exports.OdooBrowser = OdooBrowser;

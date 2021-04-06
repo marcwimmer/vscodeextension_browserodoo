@@ -13,7 +13,7 @@ export class Tools {
     public static execCommand(cmd: string, msgOk: string) {
         exec(cmd, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
             if (err) {
-                vscode.window.showErrorMessage(err);
+                vscode.window.showErrorMessage(err.message);
             } else {
                 if (msgOk && msgOk.length) {
                     vscode.window.showInformationMessage(msgOk);

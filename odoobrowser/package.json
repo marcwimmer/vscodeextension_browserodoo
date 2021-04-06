@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.9",
+  "version": "0.0.10",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -17,7 +17,20 @@
   "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+        "explorer/context": [
+          {
+            "command": "odoobrowser.newModule",
+            "group": "navigation",
+            "when": "explorerResourceIsFolder"
+          }
+        ] 
+      },
     "commands": [
+      {
+       "command": "odoobrowser.newModule",
+       "title": "Odoo New Module" 
+      },
       {
         "command": "odoobrowser.goto",
         "title": "Godoo [Goto]"

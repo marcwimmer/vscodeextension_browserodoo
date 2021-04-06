@@ -9,6 +9,12 @@ export class OdooBrowser {
     public static register(context: any) {
         context.subscriptions.push(
             vscode.commands.registerCommand(
+                'odoobrowser.newModule',
+                OdooBrowser.newModule,
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
                 'odoobrowser.goto',
                 OdooBrowser.goto,
             )
@@ -83,15 +89,8 @@ export class OdooBrowser {
 		if (filename && filename.length > 0) {
 			command +=  ' --filename ' + filename;
 		}
-		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
-			if (err) {
-				vscode.window.showErrorMessage(err);
-			} else {
-				if (!filename || !filename.length) {
-					vscode.window.showInformationMessage("Finished updating AST");
-				}
-			}
-		});
+
+        Tools.execCommand(command, "Finished updating AST");
 	}
 
     private static gotoInherited() {
@@ -157,5 +156,35 @@ export class OdooBrowser {
         }
         let command = odooBin + " update-module-file " + module;
         Tools.execCommand(command, "Update odoo module file of " + module);
+    }
+
+    private static newModule() {
+        (async() => {
+
+            await vscode.commands.executeCommand('copyFilePath');
+            let folder = await vscode.env.clipboard.readText();  // returns a string
+            if (!folder || !folder.length) {
+                return;
+            }
+            if (!Tools.hasOdooManifest()) {
+                vscode.window.showErrorMessage("No MANIFEST file found.");
+                return;
+            }
+            const moduleName = await vscode.window.showInputBox({
+                'ignoreFocusOut': true,
+                'prompt': "Please enter a module name"
+            });
+            if (!moduleName) {
+                return;
+            }
+            console.log(folder);
+            let odooBin = Tools.getOdooFrameworkBin();
+            let command = odooBin + " make-module  --name " + moduleName + " -p " + folder;
+
+
+            Tools.execCommand(command, "Make new module: " + moduleName);
+
+            // get current version
+        })();
     }
 }

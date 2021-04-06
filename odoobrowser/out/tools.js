@@ -14,7 +14,7 @@ class Tools {
     static execCommand(cmd, msgOk) {
         child_process_1.exec(cmd, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
             if (err) {
-                vscode.window.showErrorMessage(err);
+                vscode.window.showErrorMessage(err.message);
             }
             else {
                 if (msgOk && msgOk.length) {
