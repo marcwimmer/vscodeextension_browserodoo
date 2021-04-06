@@ -117,7 +117,7 @@ export class OdooBrowser {
 
 		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
 			if (err) {
-				vscode.window.showErrorMessage(err);
+				vscode.window.showErrorMessage(err.message);
 			} else {
                 const result = stdout.trim().split("\n");
                 const lastLine = result[result.length - 1];

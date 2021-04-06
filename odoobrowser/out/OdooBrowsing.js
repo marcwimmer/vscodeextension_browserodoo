@@ -88,7 +88,7 @@ class OdooBrowser {
         command += ' --lineno ' + lineNo;
         child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
             if (err) {
-                vscode.window.showErrorMessage(err);
+                vscode.window.showErrorMessage(err.message);
             }
             else {
                 const result = stdout.trim().split("\n");
