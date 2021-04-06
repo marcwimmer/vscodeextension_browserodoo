@@ -32,6 +32,7 @@ class OdooBrowser {
                 if (!term.exitStatus.code) {
                     console.log("Closed the godoo");
                     const data = fs.readFileSync(tools_1.Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
+                    fs.unlinkSync(tools_1.Tools._getPathOfSelectedFzf());
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
@@ -63,7 +64,11 @@ class OdooBrowser {
         if (filename && filename.length > 0) {
             command += ' --filename ' + filename;
         }
-        tools_1.Tools.execCommand(command, "Finished updating AST");
+        let msg = "Finished updating AST";
+        if (filename && filename.length) {
+            msg = "";
+        }
+        tools_1.Tools.execCommand(command, msg);
     }
     static gotoInherited() {
         const lineNo = tools_1.VSCodeTools.getActiveLine();

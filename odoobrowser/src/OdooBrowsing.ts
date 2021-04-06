@@ -91,7 +91,11 @@ export class OdooBrowser {
 			command +=  ' --filename ' + filename;
 		}
 
-        Tools.execCommand(command, "Finished updating AST");
+        let msg = "Finished updating AST";
+        if (filename && filename.length) {
+            msg = "";
+        }
+        Tools.execCommand(command, msg);
 	}
 
     private static gotoInherited() {
