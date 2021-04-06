@@ -53,6 +53,7 @@ export class OdooBrowser {
                 if (!term.exitStatus.code) {
                     console.log("Closed the godoo");
                     const data = fs.readFileSync(Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
+                    fs.unlinkSync(Tools._getPathOfSelectedFzf())
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
