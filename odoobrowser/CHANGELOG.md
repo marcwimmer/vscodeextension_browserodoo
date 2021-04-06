@@ -4,6 +4,8 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.15]
+- handling relative files for reload on save
 ## [0.0.12]
 - removed annoying popup
 ## [0.0.10]

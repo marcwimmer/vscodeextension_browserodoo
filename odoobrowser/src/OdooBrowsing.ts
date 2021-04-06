@@ -53,7 +53,7 @@ export class OdooBrowser {
                 if (!term.exitStatus.code) {
                     console.log("Closed the godoo");
                     const data = fs.readFileSync(Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
-                    fs.unlinkSync(Tools._getPathOfSelectedFzf())
+                    fs.unlinkSync(Tools._getPathOfSelectedFzf());
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
@@ -70,7 +70,15 @@ export class OdooBrowser {
             if (!Tools.hasOdooManifest()) {
                 return;
             }
-            const filename = VSCodeTools.getActiveRelativePath(document.fileName);
+            let filename = VSCodeTools.getActiveRelativePath(document.fileName);
+            if (!filename) {
+                return ;
+            }
+            if (filename.indexOf('/') === 0 || filename.startsWith('../')) {
+                // absolute path from somewhere else
+                return;
+            }
+            filename = filename.replace(/ /g, '\\ ');
             OdooBrowser._updateAst(filename);
 
             if (filename.indexOf('/i18n/') >= 0) {
@@ -102,7 +110,8 @@ export class OdooBrowser {
         const lineNo = VSCodeTools.getActiveLine();
         const odooBin = Tools.getOdooFrameworkBin();
 		let command = odooBin + " goto-inherited ";
-        const filename =  VSCodeTools.getActiveRelativePath();
+        let filename =  VSCodeTools.getActiveRelativePath();
+        filename = filename.replace(/ /g, '\\ ');
         command +=  ' --filepath ' + filename;
         command +=  ' --lineno ' + lineNo;
 

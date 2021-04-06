@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.13",
+  "version": "0.0.15",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -49,7 +49,7 @@
       },
       {
         "command": "odoo_debugcommand.updateModule",
-        "title": "Odoo Debug: Flag File Update Module"
+        "title": "Odoo Debug: Update Module"
       },
       {
         "command": "odoo_debugcommand.runUnittest",

@@ -48,7 +48,15 @@ class OdooBrowser {
             if (!tools_1.Tools.hasOdooManifest()) {
                 return;
             }
-            const filename = tools_1.VSCodeTools.getActiveRelativePath(document.fileName);
+            let filename = tools_1.VSCodeTools.getActiveRelativePath(document.fileName);
+            if (!filename) {
+                return;
+            }
+            if (filename.indexOf('/') === 0 || filename.startsWith('../')) {
+                // absolute path from somewhere else
+                return;
+            }
+            filename = filename.replace(/ /g, '\\ ');
             OdooBrowser._updateAst(filename);
             if (filename.indexOf('/i18n/') >= 0) {
                 tools_1.Tools.writeDebugFile("import_i18n:de_DE:" + filename);
@@ -74,7 +82,8 @@ class OdooBrowser {
         const lineNo = tools_1.VSCodeTools.getActiveLine();
         const odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " goto-inherited ";
-        const filename = tools_1.VSCodeTools.getActiveRelativePath();
+        let filename = tools_1.VSCodeTools.getActiveRelativePath();
+        filename = filename.replace(/ /g, '\\ ');
         command += ' --filepath ' + filename;
         command += ' --lineno ' + lineNo;
         child_process_1.exec(command, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
