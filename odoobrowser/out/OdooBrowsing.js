@@ -17,6 +17,8 @@ const tools_1 = require("./tools");
 const child_process_1 = require("child_process");
 class OdooBrowser {
     static register(context) {
+        context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.gotoMANIFEST', OdooBrowser.gotoMANIFEST));
+        context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.gotoManifest', OdooBrowser.gotoManifest));
         context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.newModule', OdooBrowser.newModule));
         context.subscriptions.push(vscode.commands.registerCommand('odoobrowser.goto', OdooBrowser.goto));
         context.subscriptions.push(vscode.commands.registerCommand('odoo_debugcommand.updateAstAll', OdooBrowser.updateAstAll));
@@ -134,6 +136,19 @@ class OdooBrowser {
         }
         let command = odooBin + " update-module-file " + module;
         tools_1.Tools.execCommand(command, "Update odoo module file of " + module);
+    }
+    static gotoManifest() {
+        const currentFile = tools_1.VSCodeTools.getActiveRelativePath();
+        const manifestPath = path.join(tools_1.Tools.getModuleOfFilePath(currentFile, true), "__manifest__.py");
+        if (fs.existsSync(manifestPath)) {
+            tools_1.VSCodeTools.editFile(manifestPath, 0);
+        }
+    }
+    static gotoMANIFEST() {
+        const manifestPath = path.join(tools_1.VSCodeTools.getAbsoluteRootPath(), 'MANIFEST');
+        if (fs.existsSync(manifestPath)) {
+            tools_1.VSCodeTools.editFile(manifestPath, 0);
+        }
     }
     static newModule() {
         (() => __awaiter(this, void 0, void 0, function* () {

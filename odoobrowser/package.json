@@ -36,6 +36,14 @@
         "title": "Godoo [Goto]"
       },
       {
+        "command": "odoobrowser.gotoManifest",
+        "title": "Odoo Goto Module Manifest"
+      },
+      {
+        "command": "odoobrowser.gotoMANIFEST",
+        "title": "Odoo Goto MANIFEST"
+      },
+      {
         "command": "odoobrowser.gotoInherited",
         "title": "Odoo Goto Inherited View"
       },
@@ -111,6 +119,16 @@
           "command": "odoobrowser.gotoInherited",
           "key": "ctrl+g ctrl+i",
           "mac": "cmd+g cmd+i"
+      },
+      {
+          "command": "odoobrowser.gotoManifest",
+          "key": "ctrl+g ctrl+m",
+          "mac": "cmd+g cmd+m"
+      },
+      {
+          "command": "odoobrowser.gotoMANIFEST",
+          "key": "ctrl+g ctrl+shift+m",
+          "mac": "cmd+g cmd+shift+m"
       }
     ]
   },

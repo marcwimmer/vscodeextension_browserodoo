@@ -9,6 +9,18 @@ export class OdooBrowser {
     public static register(context: any) {
         context.subscriptions.push(
             vscode.commands.registerCommand(
+                'odoobrowser.gotoMANIFEST',
+                OdooBrowser.gotoMANIFEST,
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                'odoobrowser.gotoManifest',
+                OdooBrowser.gotoManifest,
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
                 'odoobrowser.newModule',
                 OdooBrowser.newModule,
             )
@@ -161,7 +173,7 @@ export class OdooBrowser {
         // onDidCloseTerminal catches the exit event
     }
 
-    private static  updateModuleFile() {
+    private static updateModuleFile() {
         var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         let odooBin = Tools.getOdooFrameworkBin();
         let module = Tools.getModuleOfFilePath(relCurrentFilename);
@@ -170,6 +182,21 @@ export class OdooBrowser {
         }
         let command = odooBin + " update-module-file " + module;
         Tools.execCommand(command, "Update odoo module file of " + module);
+    }
+
+    private static gotoManifest() {
+        const currentFile = VSCodeTools.getActiveRelativePath();
+        const manifestPath = path.join(Tools.getModuleOfFilePath(currentFile, true), "__manifest__.py");
+        if (fs.existsSync(manifestPath)) {
+            VSCodeTools.editFile(manifestPath, 0);
+        }
+    }
+
+    private static gotoMANIFEST() {
+        const manifestPath = path.join(VSCodeTools.getAbsoluteRootPath(), 'MANIFEST');
+        if (fs.existsSync(manifestPath)) {
+            VSCodeTools.editFile(manifestPath, 0);
+        }
     }
 
     private static newModule() {

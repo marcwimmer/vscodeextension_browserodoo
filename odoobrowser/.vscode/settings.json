@@ -10,8 +10,8 @@
     "typescript.tsc.autoDetect": "off",
     "git.ignoreLimitWarning": true,
     "workbench.colorCustomizations": {
-        "activityBar.background": "#1E3307",
-        "titleBar.activeBackground": "#29480A",
-        "titleBar.activeForeground": "#F4FCEB"
+        "activityBar.background": "#774b85",
+        "titleBar.activeBackground": "#b305d6",
+        "titleBar.activeForeground": "#060a02"
     }
 }

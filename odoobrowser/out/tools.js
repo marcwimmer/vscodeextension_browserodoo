@@ -39,7 +39,7 @@ class Tools {
         vscode.window.showErrorMessage("Odoo framework not found: " + candidates);
         throw new Error("Odoo framework not found.");
     }
-    static getModuleOfFilePath(relFilepath) {
+    static getModuleOfFilePath(relFilepath, returnPath = false) {
         if (relFilepath[0] !== '/') {
             relFilepath = path.join(vscode.workspace.workspaceFolders[0].uri.path, relFilepath);
         }
@@ -47,7 +47,12 @@ class Tools {
         while (true) {
             current = path.dirname(current);
             if (fs.existsSync(current + "/__manifest__.py")) {
-                return path_1.basename(current);
+                if (returnPath) {
+                    return current;
+                }
+                else {
+                    return path_1.basename(current);
+                }
             }
             if (current === "/") {
                 break;

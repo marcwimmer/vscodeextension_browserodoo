@@ -44,7 +44,7 @@ export class Tools {
         throw new Error("Odoo framework not found.");
     }
 
-    public static getModuleOfFilePath(relFilepath: string): string {
+    public static getModuleOfFilePath(relFilepath: string, returnPath: boolean=false): string {
 
         if (relFilepath[0] !== '/') {
             relFilepath = path.join(
@@ -57,7 +57,12 @@ export class Tools {
         while (true) {
             current = path.dirname(current);
             if (fs.existsSync(current + "/__manifest__.py")) {
-                return basename(current);
+                if (returnPath) {
+                    return current;
+                }
+                else {
+                    return basename(current);
+                }
             }
             if (current === "/") {
                 break;
