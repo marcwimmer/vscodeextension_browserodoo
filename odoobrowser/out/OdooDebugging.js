@@ -9,6 +9,7 @@ class OdooDebugging {
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.updateModule", OdooDebugging.updateModule));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.updateView", OdooDebugging.updateView));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runUnittest", OdooDebugging.runUnittest));
+        context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runUnittestWaitForRemote", OdooDebugging.runUnittestWaitForRemote));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.exportI18n", OdooDebugging.exportI18n));
     }
     static updateModule() {
@@ -28,6 +29,10 @@ class OdooDebugging {
     static runUnittest() {
         var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
         tools_1.Tools.writeDebugFile("unit_test:" + relCurrentFilename);
+    }
+    static runUnittestWaitForRemote() {
+        var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
+        tools_1.Tools.writeDebugFile("unit_test_wait_for_remote:" + relCurrentFilename);
     }
     static updateView() {
         var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();

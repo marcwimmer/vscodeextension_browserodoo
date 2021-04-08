@@ -29,6 +29,12 @@ export class OdooDebugging {
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
+                "odoo_debugcommand.runUnittestWaitForRemote", 
+                OdooDebugging.runUnittestWaitForRemote
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
                 "odoo_debugcommand.exportI18n", 
                 OdooDebugging.exportI18n
             )
@@ -55,6 +61,11 @@ export class OdooDebugging {
 	private static runUnittest() {
         var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         Tools.writeDebugFile("unit_test:" + relCurrentFilename);
+    }
+
+	private static runUnittestWaitForRemote() {
+        var relCurrentFilename = VSCodeTools.getActiveRelativePath();
+        Tools.writeDebugFile("unit_test_wait_for_remote:" + relCurrentFilename);
     }
 
 	private static updateView() {
