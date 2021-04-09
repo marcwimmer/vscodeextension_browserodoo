@@ -41,12 +41,6 @@ export class OdooDebugging {
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.runUnittestWaitForRemote", 
-                OdooDebugging.runUnittestWaitForRemote
-            )
-        );
-        context.subscriptions.push(
-            vscode.commands.registerCommand(
                 "odoo_debugcommand.exportI18n", 
                 OdooDebugging.exportI18n
             )
