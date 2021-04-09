@@ -100,6 +100,11 @@ class VSCodeTools {
         }
         return vscode.window.createTerminal(name);
     }
+    static getActiveFileContent() {
+        const editor = vscode.window.activeTextEditor;
+        const document = editor.document;
+        return document.getText().trim();
+    }
     static editFile(path, lineNo) {
         const uri = vscode.Uri.file(path);
         vscode.commands.executeCommand("vscode.open", uri);

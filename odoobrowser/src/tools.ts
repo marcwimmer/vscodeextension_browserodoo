@@ -127,6 +127,12 @@ export class VSCodeTools {
 		return vscode.window.createTerminal(name);
 	}
 
+    public static getActiveFileContent() {
+		const editor = vscode.window.activeTextEditor;
+        const document = editor.document;
+        return document.getText().trim();
+    }
+
 	public static editFile(path: string, lineNo: number) { 
 		const uri = vscode.Uri.file(path);
 		vscode.commands.executeCommand<vscode.TextDocumentShowOptions>("vscode.open", uri);

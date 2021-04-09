@@ -11,6 +11,12 @@ export class OdooDebugging {
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
+                "odoo_debugcommand.runInConsole", 
+                OdooDebugging.runInConsole
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
                 "odoo_debugcommand.updateModule", 
                 OdooDebugging.updateModule
             )
@@ -25,6 +31,12 @@ export class OdooDebugging {
             vscode.commands.registerCommand(
                 "odoo_debugcommand.runUnittest", 
                 OdooDebugging.runUnittest
+            )
+        );
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                "odoo_debugcommand.runLastUnittest", 
+                OdooDebugging.runLastUnittest
             )
         );
         context.subscriptions.push(
@@ -63,14 +75,23 @@ export class OdooDebugging {
         Tools.writeDebugFile("unit_test:" + relCurrentFilename);
     }
 
-	private static runUnittestWaitForRemote() {
+	private static runLastUnittest() {
         var relCurrentFilename = VSCodeTools.getActiveRelativePath();
-        Tools.writeDebugFile("unit_test_wait_for_remote:" + relCurrentFilename);
+        Tools.writeDebugFile("last_unit_test");
     }
 
 	private static updateView() {
         var relCurrentFilename = VSCodeTools.getActiveRelativePath();
         let lineno = VSCodeTools.getActiveLine();
         Tools.writeDebugFile("update_view_in_db:" + relCurrentFilename + ":" + String(lineno));
+    }
+
+	private static runInConsole() {
+        const content = VSCodeTools.getActiveFileContent();
+        let odooBin = Tools.getOdooFrameworkBin();
+        let command = "echo '" + content + "' | " + odooBin + " shell";
+        const terminal = VSCodeTools.ensureTerminalExists('console');
+        terminal.sendText(command, true);
+        terminal.show(true);
     }
 }

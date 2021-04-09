@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.19",
+  "version": "0.0.21",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -64,10 +64,6 @@
         "title": "Odoo Debug: Run Unit Test"
       },
       {
-        "command": "odoo_debugcommand.runUnittestWaitForRemote",
-        "title": "Odoo Debug: Run Unit Test Wait For Debugger"
-      },
-      {
         "command": "odoo_debugcommand.restart",
         "title": "Odoo Debug: Restart"
       },
@@ -86,6 +82,10 @@
       {
         "command": "odoo_debugcommand.exportI18n",
         "title": "Odoo Debug: Export I18N"
+      },
+      {
+        "command": "odoo_debugcommand.runInConsole",
+        "title": "Odoo Run current file in Console"
       }
     ],
     "keybindings": [
@@ -110,7 +110,7 @@
           "mac": "cmd+r cmd+t"
       },
       {
-          "command": "odoo_debugcommand.runUnittestWaitForRemote",
+          "command": "odoo_debugcommand.runLastUnittest",
           "key": "ctrl+r ctrl+shift+t",
           "mac": "cmd+r cmd+shift+t"
       },
