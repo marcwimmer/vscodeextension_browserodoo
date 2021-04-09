@@ -11,7 +11,6 @@ class OdooDebugging {
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.updateView", OdooDebugging.updateView));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runUnittest", OdooDebugging.runUnittest));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runLastUnittest", OdooDebugging.runLastUnittest));
-        context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runUnittestWaitForRemote", OdooDebugging.runUnittestWaitForRemote));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.exportI18n", OdooDebugging.exportI18n));
     }
     static updateModule() {
