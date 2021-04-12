@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.21",
+  "version": "0.0.22",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -62,6 +62,10 @@
       {
         "command": "odoo_debugcommand.runUnittest",
         "title": "Odoo Debug: Run Unit Test"
+      },
+      {
+        "command": "odoo_debugcommand.runLastUnittest",
+        "title": "Odoo Debug: Run Last Unit Test"
       },
       {
         "command": "odoo_debugcommand.restart",
