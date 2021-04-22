@@ -1,8 +1,15 @@
 import * as vscode from 'vscode';
 import { VSCodeTools, Tools } from './tools';
+import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 
 export class OdooDebugging {
     public static register(context: any) {
+        context.subscriptions.push(
+            vscode.commands.registerCommand(
+                "odoo_debugcommand.setupLaunchJSON", 
+                OdooDebugging.setupLaunchJSON
+            )
+        );
         context.subscriptions.push(
             vscode.commands.registerCommand(
                 "odoo_debugcommand.restart", 
@@ -87,5 +94,35 @@ export class OdooDebugging {
         const terminal = VSCodeTools.ensureTerminalExists('console');
         terminal.sendText(command, true);
         terminal.show(true);
+    }
+
+    static setupLaunchJSON() {
+        let root = vscode.workspace.workspaceFolders[0].uri.path;
+        var vscodePath = root + "/.vscode";
+        var launchJson = vscodePath + "/launch.json";
+        if (!fs.existsSync(vscodePath)) {
+            fs.mkdirSync(vscodePath);
+        }
+        if (!fs.existsSync(launchJson)) {
+            fs.writeFileSync(launchJson, `
+            {
+"version": "0.2.0",
+"configurations": [
+{
+    "name": "Python: Attach remotely",
+    "type": "python",
+    "request": "attach",
+    "connect": {"host": "127.0.0.1", "port": 5678},
+    "pathMappings": [
+        {
+            "localRoot": "\${workspaceFolder}",
+            "remoteRoot": "/opt/src"
+        }
+        ]
+},
+]
+}
+`);
+        }
     }
 }

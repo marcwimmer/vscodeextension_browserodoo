@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.22",
+  "version": "0.0.23",
   "publisher": "Marc-ChristianWimmer",
   "engines": {
     "vscode": "^1.54.0"
@@ -24,12 +24,12 @@
             "group": "navigation",
             "when": "explorerResourceIsFolder"
           }
-        ] 
+        ]
       },
     "commands": [
       {
        "command": "odoobrowser.newModule",
-       "title": "Odoo New Module" 
+       "title": "Odoo New Module"
       },
       {
         "command": "odoobrowser.goto",
@@ -46,6 +46,10 @@
       {
         "command": "odoobrowser.gotoInherited",
         "title": "Odoo Goto Inherited View"
+      },
+      {
+        "command": "odoo_debugcommand.setupLaunchJSON",
+        "title": "Odoo Setup .vscode/launch.json for debugging"
       },
       {
         "command": "odoo_debugcommand.updateModuleFile",

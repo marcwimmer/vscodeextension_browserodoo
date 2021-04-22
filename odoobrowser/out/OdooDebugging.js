@@ -3,8 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OdooDebugging = void 0;
 const vscode = require("vscode");
 const tools_1 = require("./tools");
+const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
 class OdooDebugging {
     static register(context) {
+        context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.setupLaunchJSON", OdooDebugging.setupLaunchJSON));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.restart", OdooDebugging.restart));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runInConsole", OdooDebugging.runInConsole));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.updateModule", OdooDebugging.updateModule));
@@ -47,6 +49,35 @@ class OdooDebugging {
         const terminal = tools_1.VSCodeTools.ensureTerminalExists('console');
         terminal.sendText(command, true);
         terminal.show(true);
+    }
+    static setupLaunchJSON() {
+        let root = vscode.workspace.workspaceFolders[0].uri.path;
+        var vscodePath = root + "/.vscode";
+        var launchJson = vscodePath + "/launch.json";
+        if (!fs.existsSync(vscodePath)) {
+            fs.mkdirSync(vscodePath);
+        }
+        if (!fs.existsSync(launchJson)) {
+            fs.writeFileSync(launchJson, `
+            {
+"version": "0.2.0",
+"configurations": [
+{
+    "name": "Python: Attach remotely",
+    "type": "python",
+    "request": "attach",
+    "connect": {"host": "127.0.0.1", "port": 5678},
+    "pathMappings": [
+        {
+            "localRoot": "\${workspaceFolder}",
+            "remoteRoot": "/opt/src"
+        }
+        ]
+},
+]
+}
+`);
+        }
     }
 }
 exports.OdooDebugging = OdooDebugging;
