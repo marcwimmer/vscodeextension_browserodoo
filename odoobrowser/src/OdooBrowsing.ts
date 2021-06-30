@@ -156,21 +156,28 @@ export class OdooBrowser {
     }
 
     private static goto() { 
-        let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-        let astPath = path.join(rootPath, '.odoo.ast');
+        vscode.window.showErrorMessage("Test123");
+        let astFile = null;
+        for (let i =0; i < vscode.workspace.workspaceFolders.length; i += 1) {
 
-        if (!fs.existsSync(astPath)) {
+            let rootPath = vscode.workspace.workspaceFolders[i].uri.path;
+            let astPath = path.join(rootPath, '.odoo.ast');
+
+            if (fs.existsSync(astPath)) {
+                astFile = astPath;
+                break;
+            }
+        }
+        if (!astFile) {
             vscode.window.showErrorMessage("Please create an AST File before.");
             return;
         }
 
         const previewScript = Tools.getPreviewScript();
-
         const terminal = VSCodeTools.ensureTerminalExists('godoo');
-        terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" + 
-            "python " + previewScript + " {}\" > " + Tools._getPathOfSelectedFzf() + "; exit 0");
+        terminal.sendText("cat '" + astFile + "' | fzf --preview-window=up --preview=\"" +
+             "python " + previewScript + " {}\" > " + Tools._getPathOfSelectedFzf() + "; exit 0");
         terminal.show(false);
-        // onDidCloseTerminal catches the exit event
     }
 
     private static updateModuleFile() {

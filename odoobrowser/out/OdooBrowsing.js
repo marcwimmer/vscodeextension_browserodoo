@@ -13,7 +13,7 @@ exports.OdooBrowser = void 0;
 const vscode = require("vscode");
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
 const path = require("path"); // In NodeJS: 'const fs = require('fs')'
-const tools_2 = require("./tools");
+const tools_1 = require("./tools");
 const child_process_1 = require("child_process");
 class OdooBrowser {
     static register(context) {
@@ -33,13 +33,13 @@ class OdooBrowser {
             if (term.name === 'godoo') {
                 if (!term.exitStatus.code) {
                     console.log("Closed the godoo");
-                    const data = fs.readFileSync(tools_2.Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
-                    fs.unlinkSync(tools_2.Tools._getPathOfSelectedFzf());
+                    const data = fs.readFileSync(tools_1.Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
+                    fs.unlinkSync(tools_1.Tools._getPathOfSelectedFzf());
                     const fileLocation = data.split(":::")[1];
                     const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
                     const lineNo = Number(fileLocation.split(":")[1]);
-                    tools_2.VSCodeTools.editFile(filePath, lineNo);
+                    tools_1.VSCodeTools.editFile(filePath, lineNo);
                 }
             }
         });
@@ -47,10 +47,10 @@ class OdooBrowser {
     static registerDidSaveDocument() {
         vscode.workspace.onDidSaveTextDocument((document) => {
             // update ast on change
-            if (!tools_2.Tools.hasOdooManifest()) {
+            if (!tools_1.Tools.hasOdooManifest()) {
                 return;
             }
-            let filename = tools_2.VSCodeTools.getActiveRelativePath(document.fileName);
+            let filename = tools_1.VSCodeTools.getActiveRelativePath(document.fileName);
             if (!filename) {
                 return;
             }
@@ -61,15 +61,15 @@ class OdooBrowser {
             filename = filename.replace(/ /g, '\\ ');
             OdooBrowser._updateAst(filename);
             if (filename.indexOf('/i18n/') >= 0) {
-                tools_2.Tools.writeDebugFile("import_i18n:de_DE:" + filename);
+                tools_1.Tools.writeDebugFile("import_i18n:de_DE:" + filename);
             }
         });
     }
     static _updateAst(filename) {
-        if (!tools_2.Tools.hasOdooManifest()) {
+        if (!tools_1.Tools.hasOdooManifest()) {
             return;
         }
-        let odooBin = tools_2.Tools.getOdooFrameworkBin();
+        let odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " update-ast ";
         if (filename && filename.length > 0) {
             command += ' --filename ' + filename;
@@ -78,13 +78,13 @@ class OdooBrowser {
         if (filename && filename.length) {
             msg = "";
         }
-        tools_2.Tools.execCommand(command, msg);
+        tools_1.Tools.execCommand(command, msg);
     }
     static gotoInherited() {
-        const lineNo = tools_2.VSCodeTools.getActiveLine();
-        const odooBin = tools_2.Tools.getOdooFrameworkBin();
+        const lineNo = tools_1.VSCodeTools.getActiveLine();
+        const odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " goto-inherited ";
-        let filename = tools_2.VSCodeTools.getActiveRelativePath();
+        let filename = tools_1.VSCodeTools.getActiveRelativePath();
         filename = filename.replace(/ /g, '\\ ');
         command += ' --filepath ' + filename;
         command += ' --lineno ' + lineNo;
@@ -100,54 +100,61 @@ class OdooBrowser {
                 }
                 const filepath = lastLine.split(":")[1];
                 const lineNo = Number(lastLine.split(":")[2]);
-                tools_2.VSCodeTools.editFile(filepath, lineNo);
+                tools_1.VSCodeTools.editFile(filepath, lineNo);
             }
         });
     }
     static updateAstAll() {
         // var relCurrentFilename = getActiveRelativePath();
-        var odooBin = tools_2.Tools.getOdooFrameworkBin();
+        var odooBin = tools_1.Tools.getOdooFrameworkBin();
         OdooBrowser._updateAst(null);
     }
     static updateAstFile() {
-        var relCurrentFilename = tools_2.VSCodeTools.getActiveRelativePath();
+        var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
         OdooBrowser._updateAst(relCurrentFilename);
     }
     static goto() {
-        let rootPath = vscode.workspace.workspaceFolders[0].uri.path;
-        let astPath = path.join(rootPath, '.odoo.ast');
-        if (!fs.existsSync(astPath)) {
+        vscode.window.showErrorMessage("Test123");
+        let astFile = null;
+        for (let i = 0; i < vscode.workspace.workspaceFolders.length; i += 1) {
+            let rootPath = vscode.workspace.workspaceFolders[i].uri.path;
+            let astPath = path.join(rootPath, '.odoo.ast');
+            if (fs.existsSync(astPath)) {
+                astFile = astPath;
+                break;
+            }
+        }
+        if (!astFile) {
             vscode.window.showErrorMessage("Please create an AST File before.");
             return;
         }
-        const previewScript = tools_2.Tools.getPreviewScript();
-        const terminal = tools_2.VSCodeTools.ensureTerminalExists('godoo');
-        terminal.sendText("cat .odoo.ast | fzf --preview-window=up --preview=\"" +
-            "python " + previewScript + " {}\" > " + tools_2.Tools._getPathOfSelectedFzf() + "; exit 0");
+        const previewScript = tools_1.Tools.getPreviewScript();
+        const terminal = tools_1.VSCodeTools.ensureTerminalExists('godoo');
+        terminal.sendText("cat '" + astFile + "' | fzf --preview-window=up --preview=\"" +
+            "python " + previewScript + " {}\" > " + tools_1.Tools._getPathOfSelectedFzf() + "; exit 0");
         terminal.show(false);
-        // onDidCloseTerminal catches the exit event
     }
     static updateModuleFile() {
-        var relCurrentFilename = tools_2.VSCodeTools.getActiveRelativePath();
-        let odooBin = tools_2.Tools.getOdooFrameworkBin();
-        let module = tools_2.Tools.getModuleOfFilePath(relCurrentFilename);
+        var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
+        let odooBin = tools_1.Tools.getOdooFrameworkBin();
+        let module = tools_1.Tools.getModuleOfFilePath(relCurrentFilename);
         if (!module || !module.length) {
             return;
         }
         let command = odooBin + " update-module-file " + module;
-        tools_2.Tools.execCommand(command, "Update odoo module file of " + module);
+        tools_1.Tools.execCommand(command, "Update odoo module file of " + module);
     }
     static gotoManifest() {
-        const currentFile = tools_2.VSCodeTools.getActiveRelativePath();
-        const manifestPath = path.join(tools_2.Tools.getModuleOfFilePath(currentFile, true), "__manifest__.py");
+        const currentFile = tools_1.VSCodeTools.getActiveRelativePath();
+        const manifestPath = path.join(tools_1.Tools.getModuleOfFilePath(currentFile, true), "__manifest__.py");
         if (fs.existsSync(manifestPath)) {
-            tools_2.VSCodeTools.editFile(manifestPath, 0);
+            tools_1.VSCodeTools.editFile(manifestPath, 0);
         }
     }
     static gotoMANIFEST() {
-        const manifestPath = path.join(tools_2.VSCodeTools.getAbsoluteRootPath(), 'MANIFEST');
+        const manifestPath = path.join(tools_1.VSCodeTools.getAbsoluteRootPath(), 'MANIFEST');
         if (fs.existsSync(manifestPath)) {
-            tools_2.VSCodeTools.editFile(manifestPath, 0);
+            tools_1.VSCodeTools.editFile(manifestPath, 0);
         }
     }
     static newModule() {
@@ -157,7 +164,7 @@ class OdooBrowser {
             if (!folder || !folder.length) {
                 return;
             }
-            if (!tools_2.Tools.hasOdooManifest()) {
+            if (!tools_1.Tools.hasOdooManifest()) {
                 vscode.window.showErrorMessage("No MANIFEST file found.");
                 return;
             }
@@ -169,9 +176,9 @@ class OdooBrowser {
                 return;
             }
             console.log(folder);
-            let odooBin = tools_2.Tools.getOdooFrameworkBin();
+            let odooBin = tools_1.Tools.getOdooFrameworkBin();
             let command = odooBin + " make-module  --name " + moduleName + " -p " + folder;
-            tools_2.Tools.execCommand(command, "Make new module: " + moduleName);
+            tools_1.Tools.execCommand(command, "Make new module: " + moduleName);
             // get current version
         }))();
     }
