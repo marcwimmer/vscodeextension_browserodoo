@@ -4,6 +4,9 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.25]
+
+- update ast for all
 ## [0.0.24]
 
 - multiple workspaces find first .odoo.ast

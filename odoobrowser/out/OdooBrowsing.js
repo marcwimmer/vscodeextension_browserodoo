@@ -66,19 +66,28 @@ class OdooBrowser {
         });
     }
     static _updateAst(filename) {
-        if (!tools_1.Tools.hasOdooManifest()) {
-            return;
-        }
         let odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " update-ast ";
-        if (filename && filename.length > 0) {
-            command += ' --filename ' + filename;
+        if (filename && !filename.indexOf('.')) {
+            return;
         }
-        let msg = "Finished updating AST";
-        if (filename && filename.length) {
-            msg = "";
+        for (let i = 0; i < vscode.workspace.workspaceFolders.length; i += 1) {
+            if (!tools_1.Tools.hasOdooManifest(i)) {
+                return;
+            }
+            if (filename && filename.length > 0) {
+                // matches workspace?
+                if (vscode.workspace.workspaceFolders[i].uri.path.indexOf(filename)) {
+                    continue;
+                }
+                command += ' --filename ' + filename;
+            }
+            let msg = "Finished updating AST";
+            if (filename && filename.length) {
+                msg = "";
+            }
+            tools_1.Tools.execCommand("cd '" + vscode.workspace.workspaceFolders[i].uri.path + "'; " + command, msg);
         }
-        tools_1.Tools.execCommand(command, msg);
     }
     static gotoInherited() {
         const lineNo = tools_1.VSCodeTools.getActiveLine();

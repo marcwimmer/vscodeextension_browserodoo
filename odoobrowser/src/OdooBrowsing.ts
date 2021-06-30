@@ -100,22 +100,32 @@ export class OdooBrowser {
     }
 
 	private static _updateAst(filename: string) {
-
-        if (!Tools.hasOdooManifest()) {
+        let odooBin = Tools.getOdooFrameworkBin();
+        let command = odooBin + " update-ast ";
+        if (filename && !filename.indexOf('.')) {
             return;
         }
 
-		let odooBin = Tools.getOdooFrameworkBin();
-		let command = odooBin + " update-ast ";
-		if (filename && filename.length > 0) {
-			command +=  ' --filename ' + filename;
-		}
+        for (let i =0; i < vscode.workspace.workspaceFolders.length; i += 1) {
+            if (!Tools.hasOdooManifest(i)) {
+                return;
+            }
 
-        let msg = "Finished updating AST";
-        if (filename && filename.length) {
-            msg = "";
+            if (filename && filename.length > 0) {
+                // matches workspace?
+                if (vscode.workspace.workspaceFolders[i].uri.path.indexOf(filename)) {
+                    continue;
+                }
+
+                command +=  ' --filename ' + filename;
+            }
+
+            let msg = "Finished updating AST";
+            if (filename && filename.length) {
+                msg = "";
+            }
+            Tools.execCommand("cd '" + vscode.workspace.workspaceFolders[i].uri.path + "'; " + command, msg);
         }
-        Tools.execCommand(command, msg);
 	}
 
     private static gotoInherited() {

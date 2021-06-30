@@ -90,9 +90,9 @@ export class Tools {
 		);
 	}
 
-    public static hasOdooManifest(): boolean {
+    public static hasOdooManifest(workspaceId: Number = 0): boolean {
 		const manifestFilePath = path.join(
-            vscode.workspace.workspaceFolders[0].uri.path,
+            vscode.workspace.workspaceFolders[workspaceId.valueOf()].uri.path,
             "MANIFEST"
             );
 
