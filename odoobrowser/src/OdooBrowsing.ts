@@ -171,7 +171,7 @@ export class OdooBrowser {
         let rootPath = workspaceFolder.uri.path;
         let astPath = path.join(rootPath, '.odoo.ast');
 
-        if (fs.existsSync(astPath)) {
+        if (!fs.existsSync(astPath)) {
             vscode.window.showErrorMessage("Please create an AST File before.");
             return;
         }
