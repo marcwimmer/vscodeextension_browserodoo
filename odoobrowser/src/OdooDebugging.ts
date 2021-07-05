@@ -6,49 +6,49 @@ export class OdooDebugging {
     public static register(context: any) {
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.setupLaunchJSON", 
+                "odoo_debugcommand.setupLaunchJSON",
                 OdooDebugging.setupLaunchJSON
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.restart", 
+                "odoo_debugcommand.restart",
                 OdooDebugging.restart
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.runInConsole", 
+                "odoo_debugcommand.runInConsole",
                 OdooDebugging.runInConsole
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.updateModule", 
+                "odoo_debugcommand.updateModule",
                 OdooDebugging.updateModule
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.updateView", 
+                "odoo_debugcommand.updateView",
                 OdooDebugging.updateView
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.runUnittest", 
+                "odoo_debugcommand.runUnittest",
                 OdooDebugging.runUnittest
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.runLastUnittest", 
+                "odoo_debugcommand.runLastUnittest",
                 OdooDebugging.runLastUnittest
             )
         );
         context.subscriptions.push(
             vscode.commands.registerCommand(
-                "odoo_debugcommand.exportI18n", 
+                "odoo_debugcommand.exportI18n",
                 OdooDebugging.exportI18n
             )
         );
@@ -97,7 +97,8 @@ export class OdooDebugging {
     }
 
     static setupLaunchJSON() {
-        let root = vscode.workspace.workspaceFolders[0].uri.path;
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+        let root = workspaceFolder.uri.path;
         var vscodePath = root + "/.vscode";
         var launchJson = vscodePath + "/launch.json";
         if (!fs.existsSync(vscodePath)) {

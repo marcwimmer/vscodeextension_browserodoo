@@ -11,7 +11,8 @@ export class Tools {
     }
 
     public static execCommand(cmd: string, msgOk: string) {
-        exec(cmd, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+        exec(cmd, {cwd: workspaceFolder.uri.path}, (err: any, stdout: any, stderr: any) => {
             if (err) {
                 vscode.window.showErrorMessage(err.message);
             } else {
@@ -47,8 +48,9 @@ export class Tools {
     public static getModuleOfFilePath(relFilepath: string, returnPath: boolean=false): string {
 
         if (relFilepath[0] !== '/') {
+            var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
             relFilepath = path.join(
-                vscode.workspace.workspaceFolders[0].uri.path,
+                workspaceFolder.uri.path,
                 relFilepath,
             );
 
@@ -84,15 +86,16 @@ export class Tools {
 	}
 
 	public static _getPathOfSelectedFzf() {
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder(); 
 		return path.join(
-			vscode.workspace.workspaceFolders[0].uri.path,
+			workspaceFolder.uri.path,
 			'.selected'
 		);
 	}
 
-    public static hasOdooManifest(workspaceId: Number = 0): boolean {
+    public static hasOdooManifest(workspaceFolder: vscode.WorkspaceFolder): boolean {
 		const manifestFilePath = path.join(
-            vscode.workspace.workspaceFolders[workspaceId.valueOf()].uri.path,
+            workspaceFolder.uri.path,
             "MANIFEST"
             );
 
@@ -164,13 +167,23 @@ export class VSCodeTools {
         return vscode.window.activeTextEditor.selection.active.line;
     }
 
+    public static getCurrentWorkspaceFolder() {
+        return vscode.workspace.getWorkspaceFolder(
+            vscode.window.activeTextEditor.document.uri
+        );  //.fsPath;
+    }
+
     public static getAbsoluteRootPath() {
         if (!vscode.workspace.workspaceFolders) {
             vscode.window.showInformationMessage("No folder or workspace opened.");
             return "";
         }
-        const folderUri = vscode.workspace?.workspaceFolders[0]?.uri;
-        return folderUri.path;
+        var workspaceFolder = this.getCurrentWorkspaceFolder();
+        if (workspaceFolder === null) {
+            vscode.window.showInformationMessage("No workspace folder selectec.");
+            return "";
+        }
+        return workspaceFolder.uri.path;
 
     }
 

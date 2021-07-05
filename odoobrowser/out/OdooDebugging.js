@@ -51,7 +51,8 @@ class OdooDebugging {
         terminal.show(true);
     }
     static setupLaunchJSON() {
-        let root = vscode.workspace.workspaceFolders[0].uri.path;
+        var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
+        let root = workspaceFolder.uri.path;
         var vscodePath = root + "/.vscode";
         var launchJson = vscodePath + "/launch.json";
         if (!fs.existsSync(vscodePath)) {

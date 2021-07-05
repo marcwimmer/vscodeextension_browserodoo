@@ -12,7 +12,8 @@ class Tools {
         return (_b = (_a = vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')) === null || _a === void 0 ? void 0 : _a.extensionPath) !== null && _b !== void 0 ? _b : "";
     }
     static execCommand(cmd, msgOk) {
-        child_process_1.exec(cmd, { cwd: vscode.workspace.workspaceFolders[0].uri.path }, (err, stdout, stderr) => {
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+        child_process_1.exec(cmd, { cwd: workspaceFolder.uri.path }, (err, stdout, stderr) => {
             if (err) {
                 vscode.window.showErrorMessage(err.message);
             }
@@ -41,7 +42,8 @@ class Tools {
     }
     static getModuleOfFilePath(relFilepath, returnPath = false) {
         if (relFilepath[0] !== '/') {
-            relFilepath = path.join(vscode.workspace.workspaceFolders[0].uri.path, relFilepath);
+            var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+            relFilepath = path.join(workspaceFolder.uri.path, relFilepath);
         }
         let current = relFilepath;
         while (true) {
@@ -71,10 +73,11 @@ class Tools {
         return lines;
     }
     static _getPathOfSelectedFzf() {
-        return path.join(vscode.workspace.workspaceFolders[0].uri.path, '.selected');
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+        return path.join(workspaceFolder.uri.path, '.selected');
     }
-    static hasOdooManifest(workspaceId = 0) {
-        const manifestFilePath = path.join(vscode.workspace.workspaceFolders[workspaceId.valueOf()].uri.path, "MANIFEST");
+    static hasOdooManifest(workspaceFolder) {
+        const manifestFilePath = path.join(workspaceFolder.uri.path, "MANIFEST");
         if (!fs.existsSync(manifestFilePath)) {
             return false;
         }
@@ -124,14 +127,20 @@ class VSCodeTools {
         }
         return vscode.window.activeTextEditor.selection.active.line;
     }
+    static getCurrentWorkspaceFolder() {
+        return vscode.workspace.getWorkspaceFolder(vscode.window.activeTextEditor.document.uri); //.fsPath;
+    }
     static getAbsoluteRootPath() {
-        var _a, _b;
         if (!vscode.workspace.workspaceFolders) {
             vscode.window.showInformationMessage("No folder or workspace opened.");
             return "";
         }
-        const folderUri = (_b = (_a = vscode.workspace) === null || _a === void 0 ? void 0 : _a.workspaceFolders[0]) === null || _b === void 0 ? void 0 : _b.uri;
-        return folderUri.path;
+        var workspaceFolder = this.getCurrentWorkspaceFolder();
+        if (workspaceFolder === null) {
+            vscode.window.showInformationMessage("No workspace folder selectec.");
+            return "";
+        }
+        return workspaceFolder.uri.path;
     }
 }
 exports.VSCodeTools = VSCodeTools;

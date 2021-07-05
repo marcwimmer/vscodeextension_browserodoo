@@ -67,7 +67,8 @@ export class OdooBrowser {
                     const data = fs.readFileSync(Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
                     fs.unlinkSync(Tools._getPathOfSelectedFzf());
                     const fileLocation = data.split(":::")[1];
-                    const rootPath = vscode.workspace.workspaceFolders[0].uri.path;
+                    var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+                    const rootPath = workspaceFolder.uri.path;
                     const filePath = path.join(rootPath, fileLocation.split(":")[0]);
                     const lineNo = Number(fileLocation.split(":")[1]);
                     VSCodeTools.editFile(filePath, lineNo);
@@ -79,7 +80,8 @@ export class OdooBrowser {
     private static registerDidSaveDocument() {
         vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
             // update ast on change
-            if (!Tools.hasOdooManifest()) {
+            var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+            if (!Tools.hasOdooManifest(workspaceFolder)) {
                 return;
             }
             let filename = VSCodeTools.getActiveRelativePath(document.fileName);
@@ -106,26 +108,21 @@ export class OdooBrowser {
             return;
         }
 
-        for (let i =0; i < vscode.workspace.workspaceFolders.length; i += 1) {
-            if (!Tools.hasOdooManifest(i)) {
-                return;
-            }
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
 
-            if (filename && filename.length > 0) {
-                // matches workspace?
-                if (vscode.workspace.workspaceFolders[i].uri.path.indexOf(filename)) {
-                    continue;
-                }
-
-                command +=  ' --filename ' + filename;
-            }
-
-            let msg = "Finished updating AST";
-            if (filename && filename.length) {
-                msg = "";
-            }
-            Tools.execCommand("cd '" + vscode.workspace.workspaceFolders[i].uri.path + "'; " + command, msg);
+        if (!Tools.hasOdooManifest(workspaceFolder)) {
+            return;
         }
+
+        if (filename && filename.length > 0) {
+            command +=  ' --filename ' + filename;
+        }
+
+        let msg = "Finished updating AST";
+        if (filename && filename.length) {
+            msg = "";
+        }
+        Tools.execCommand("cd '" + workspaceFolder.uri.path + "'; " + command, msg);
 	}
 
     private static gotoInherited() {
@@ -136,8 +133,9 @@ export class OdooBrowser {
         filename = filename.replace(/ /g, '\\ ');
         command +=  ' --filepath ' + filename;
         command +=  ' --lineno ' + lineNo;
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
 
-		exec(command, {cwd: vscode.workspace.workspaceFolders[0].uri.path}, (err: any, stdout: any, stderr: any) => {
+		exec(command, {cwd: workspaceFolder.uri.path}, (err: any, stdout: any, stderr: any) => {
 			if (err) {
 				vscode.window.showErrorMessage(err.message);
 			} else {
@@ -165,20 +163,15 @@ export class OdooBrowser {
         OdooBrowser._updateAst(relCurrentFilename);
     }
 
-    private static goto() { 
+    private static goto() {
         vscode.window.showErrorMessage("Test123");
         let astFile = null;
-        for (let i =0; i < vscode.workspace.workspaceFolders.length; i += 1) {
+        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
 
-            let rootPath = vscode.workspace.workspaceFolders[i].uri.path;
-            let astPath = path.join(rootPath, '.odoo.ast');
+        let rootPath = workspaceFolder.uri.path;
+        let astPath = path.join(rootPath, '.odoo.ast');
 
-            if (fs.existsSync(astPath)) {
-                astFile = astPath;
-                break;
-            }
-        }
-        if (!astFile) {
+        if (fs.existsSync(astPath)) {
             vscode.window.showErrorMessage("Please create an AST File before.");
             return;
         }
@@ -186,7 +179,7 @@ export class OdooBrowser {
         const previewScript = Tools.getPreviewScript();
         const terminal = VSCodeTools.ensureTerminalExists('godoo');
         terminal.sendText("cat '" + astFile + "' | fzf --preview-window=up --preview=\"" +
-             "python " + previewScript + " {}\" > " + Tools._getPathOfSelectedFzf() + "; exit 0");
+            "python " + previewScript + " {}\" > " + Tools._getPathOfSelectedFzf() + "; exit 0");
         terminal.show(false);
     }
 
@@ -224,7 +217,8 @@ export class OdooBrowser {
             if (!folder || !folder.length) {
                 return;
             }
-            if (!Tools.hasOdooManifest()) {
+            const workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+            if (!Tools.hasOdooManifest(workspaceFolder)) {
                 vscode.window.showErrorMessage("No MANIFEST file found.");
                 return;
             }
