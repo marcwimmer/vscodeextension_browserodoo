@@ -4,6 +4,12 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.30]
+
+- fixed python3 for preview
+- fixed ast godoo
+
+
 ## [0.0.26]
 
 - dynamic workspace folders (not just index=0)
