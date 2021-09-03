@@ -128,6 +128,9 @@ class VSCodeTools {
         return vscode.window.activeTextEditor.selection.active.line;
     }
     static getCurrentWorkspaceFolder() {
+        if (vscode.window.activeTextEditor === undefined) {
+            return;
+        }
         return vscode.workspace.getWorkspaceFolder(vscode.window.activeTextEditor.document.uri); //.fsPath;
     }
     static getAbsoluteRootPath() {

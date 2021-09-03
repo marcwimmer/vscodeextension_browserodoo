@@ -1,1 +1,8 @@
+# For theia
+vsce package
+mv *.vsix releases
+rm latest.vsix
+ln -s $(ls . |tail -n1) latest.vsix
+
+# to MS marketplace
 vsce publish
