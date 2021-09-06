@@ -3,6 +3,8 @@ vsce package
 mv *.vsix releases
 rm latest.vsix
 ln -s $(ls . |tail -n1) latest.vsix
+git tag VERSION
+git push --tags
 
 # to MS marketplace
 vsce publish
