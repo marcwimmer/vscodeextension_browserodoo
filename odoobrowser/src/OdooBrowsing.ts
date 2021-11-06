@@ -62,17 +62,20 @@ export class OdooBrowser {
     private static registerFzfGodo() {
         vscode.window.onDidCloseTerminal(term => {
             if (term.name === 'godoo') {
-                if (!term.exitStatus.code) {
-                    console.log("Closed the godoo");
-                    const data = fs.readFileSync(Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
-                    fs.unlinkSync(Tools._getPathOfSelectedFzf());
-                    const fileLocation = data.split(":::")[1];
-                    var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
-                    const rootPath = workspaceFolder.uri.path;
-                    const filePath = path.join(rootPath, fileLocation.split(":")[0]);
-                    const lineNo = Number(fileLocation.split(":")[1]);
-                    VSCodeTools.editFile(filePath, lineNo);
+                //if (!term.exitStatus.code) {  //undefined means still active; but it is closed....mmhhh
+                const selectedFile = Tools._getPathOfSelectedFzf()
+                if (!fs.existsSync(selectedFile)) {
+                    return;
                 }
+                const data = fs.readFileSync(selectedFile, 'UTF-8').trim();
+                fs.unlinkSync(selectedFile);
+                const fileLocation = data.split(":::")[1];
+                var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+                const rootPath = workspaceFolder.uri.path;
+                const filePath = path.join(rootPath, fileLocation.split(":")[0]);
+                const lineNo = Number(fileLocation.split(":")[1]);
+                VSCodeTools.editFile(filePath, lineNo);
+                //}
             }
         });
     }
@@ -236,6 +239,7 @@ export class OdooBrowser {
 
 
             Tools.execCommand(command, "Make new module: " + moduleName);
+            //theia.workspace.openTextDocument(resource);
 
             // get current version
         })();

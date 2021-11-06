@@ -31,17 +31,25 @@ class OdooBrowser {
     static registerFzfGodo() {
         vscode.window.onDidCloseTerminal(term => {
             if (term.name === 'godoo') {
-                if (!term.exitStatus.code) {
-                    console.log("Closed the godoo");
-                    const data = fs.readFileSync(tools_1.Tools._getPathOfSelectedFzf(), 'UTF-8').trim();
-                    fs.unlinkSync(tools_1.Tools._getPathOfSelectedFzf());
-                    const fileLocation = data.split(":::")[1];
-                    var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
-                    const rootPath = workspaceFolder.uri.path;
-                    const filePath = path.join(rootPath, fileLocation.split(":")[0]);
-                    const lineNo = Number(fileLocation.split(":")[1]);
-                    tools_1.VSCodeTools.editFile(filePath, lineNo);
+                vscode.window.showInformationMessage('here1');
+                let debug = vscode.window.createOutputChannel("OdooBrowser");
+                console.log('hallo123');
+                console.log(term);
+                //if (!term.exitStatus.code) {  //undefined means still active; but it is closed....mmhhh
+                console.log("Closed the godoo");
+                const selectedFile = tools_1.Tools._getPathOfSelectedFzf();
+                if (!fs.existsSync(selectedFile)) {
+                    return;
                 }
+                const data = fs.readFileSync(selectedFile, 'UTF-8').trim();
+                fs.unlinkSync(selectedFile);
+                const fileLocation = data.split(":::")[1];
+                var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
+                const rootPath = workspaceFolder.uri.path;
+                const filePath = path.join(rootPath, fileLocation.split(":")[0]);
+                const lineNo = Number(fileLocation.split(":")[1]);
+                tools_1.VSCodeTools.editFile(filePath, lineNo);
+                //}
             }
         });
     }
@@ -183,6 +191,7 @@ class OdooBrowser {
             let odooBin = tools_1.Tools.getOdooFrameworkBin();
             let command = odooBin + " make-module  --name " + moduleName + " -p " + folder;
             tools_1.Tools.execCommand(command, "Make new module: " + moduleName);
+            //theia.workspace.openTextDocument(resource);
             // get current version
         }))();
     }
