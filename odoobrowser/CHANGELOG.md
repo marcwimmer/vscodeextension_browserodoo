@@ -4,6 +4,10 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.32]
+
+- using MANIFEST as root not workspace root
+
 ## [0.0.30]
 
 - fixed python3 for preview

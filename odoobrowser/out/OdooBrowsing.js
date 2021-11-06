@@ -31,12 +31,7 @@ class OdooBrowser {
     static registerFzfGodo() {
         vscode.window.onDidCloseTerminal(term => {
             if (term.name === 'godoo') {
-                vscode.window.showInformationMessage('here1');
-                let debug = vscode.window.createOutputChannel("OdooBrowser");
-                console.log('hallo123');
-                console.log(term);
                 //if (!term.exitStatus.code) {  //undefined means still active; but it is closed....mmhhh
-                console.log("Closed the godoo");
                 const selectedFile = tools_1.Tools._getPathOfSelectedFzf();
                 if (!fs.existsSync(selectedFile)) {
                     return;
