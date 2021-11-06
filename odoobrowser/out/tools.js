@@ -134,16 +134,27 @@ class VSCodeTools {
         return vscode.workspace.getWorkspaceFolder(vscode.window.activeTextEditor.document.uri); //.fsPath;
     }
     static getAbsoluteRootPath() {
-        if (!vscode.workspace.workspaceFolders) {
-            vscode.window.showInformationMessage("No folder or workspace opened.");
-            return "";
-        }
         var workspaceFolder = this.getCurrentWorkspaceFolder();
         if (workspaceFolder === null) {
-            vscode.window.showInformationMessage("No workspace folder selectec.");
-            return "";
+            vscode.window.showInformationMessage("No workspace folder selected.");
+            if (!vscode.workspace.workspaceFolders) {
+                vscode.window.showInformationMessage("No folder or workspace opened.");
+                return "";
+            }
+            else {
+                return workspaceFolder.uri.path;
+            }
         }
-        return workspaceFolder.uri.path;
+        else {
+            var check = workspaceFolder.uri.path;
+            while (!fs.existsSync(check + '/MANIFEST')) {
+                check = path_1.dirname(check);
+                if (check === '/') {
+                    return "";
+                }
+            }
+            return check;
+        }
     }
 }
 exports.VSCodeTools = VSCodeTools;
