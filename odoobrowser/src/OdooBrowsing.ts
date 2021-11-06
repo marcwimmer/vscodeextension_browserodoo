@@ -63,15 +63,14 @@ export class OdooBrowser {
         vscode.window.onDidCloseTerminal(term => {
             if (term.name === 'godoo') {
                 //if (!term.exitStatus.code) {  //undefined means still active; but it is closed....mmhhh
-                const selectedFile = Tools._getPathOfSelectedFzf()
+                const selectedFile = Tools._getPathOfSelectedFzf();
                 if (!fs.existsSync(selectedFile)) {
                     return;
                 }
                 const data = fs.readFileSync(selectedFile, 'UTF-8').trim();
                 fs.unlinkSync(selectedFile);
                 const fileLocation = data.split(":::")[1];
-                var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
-                const rootPath = workspaceFolder.uri.path;
+                const rootPath = VSCodeTools.getCurrentWorkspaceFolder();
                 const filePath = path.join(rootPath, fileLocation.split(":")[0]);
                 const lineNo = Number(fileLocation.split(":")[1]);
                 VSCodeTools.editFile(filePath, lineNo);
@@ -125,7 +124,7 @@ export class OdooBrowser {
         if (filename && filename.length) {
             msg = "";
         }
-        Tools.execCommand("cd '" + workspaceFolder.uri.path + "'; " + command, msg);
+        Tools.execCommand("cd '" + workspaceFolder + "'; " + command, msg);
 	}
 
     private static gotoInherited() {
@@ -138,7 +137,7 @@ export class OdooBrowser {
         command +=  ' --lineno ' + lineNo;
         var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
 
-		exec(command, {cwd: workspaceFolder.uri.path}, (err: any, stdout: any, stderr: any) => {
+		exec(command, {cwd: workspaceFolder}, (err: any, stdout: any, stderr: any) => {
 			if (err) {
 				vscode.window.showErrorMessage(err.message);
 			} else {
@@ -169,9 +168,8 @@ export class OdooBrowser {
     private static goto() {
         let debug = vscode.window.createOutputChannel("OdooBrowser");
         debug.appendLine("Goto called");
-        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
 
-        let rootPath = workspaceFolder.uri.path;
+        let rootPath = VSCodeTools.getCurrentWorkspaceFolder();
         let astPath = path.join(rootPath, '.odoo.ast');
 
         if (!fs.existsSync(astPath)) {

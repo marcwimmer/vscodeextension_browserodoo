@@ -4,6 +4,7 @@ exports.OdooDebugging = void 0;
 const vscode = require("vscode");
 const tools_1 = require("./tools");
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
+const path_1 = require("path");
 class OdooDebugging {
     static register(context) {
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.setupLaunchJSON", OdooDebugging.setupLaunchJSON));
@@ -51,9 +52,7 @@ class OdooDebugging {
         terminal.show(true);
     }
     static setupLaunchJSON() {
-        var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
-        let root = workspaceFolder.uri.path;
-        var vscodePath = root + "/.vscode";
+        var vscodePath = path_1.posix.join(tools_1.VSCodeTools.getCurrentWorkspaceFolder(), '.vscode');
         var launchJson = vscodePath + "/launch.json";
         if (!fs.existsSync(vscodePath)) {
             fs.mkdirSync(vscodePath);

@@ -39,8 +39,7 @@ class OdooBrowser {
                 const data = fs.readFileSync(selectedFile, 'UTF-8').trim();
                 fs.unlinkSync(selectedFile);
                 const fileLocation = data.split(":::")[1];
-                var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
-                const rootPath = workspaceFolder.uri.path;
+                const rootPath = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
                 const filePath = path.join(rootPath, fileLocation.split(":")[0]);
                 const lineNo = Number(fileLocation.split(":")[1]);
                 tools_1.VSCodeTools.editFile(filePath, lineNo);
@@ -87,7 +86,7 @@ class OdooBrowser {
         if (filename && filename.length) {
             msg = "";
         }
-        tools_1.Tools.execCommand("cd '" + workspaceFolder.uri.path + "'; " + command, msg);
+        tools_1.Tools.execCommand("cd '" + workspaceFolder + "'; " + command, msg);
     }
     static gotoInherited() {
         const lineNo = tools_1.VSCodeTools.getActiveLine();
@@ -98,7 +97,7 @@ class OdooBrowser {
         command += ' --filepath ' + filename;
         command += ' --lineno ' + lineNo;
         var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
-        child_process_1.exec(command, { cwd: workspaceFolder.uri.path }, (err, stdout, stderr) => {
+        child_process_1.exec(command, { cwd: workspaceFolder }, (err, stdout, stderr) => {
             if (err) {
                 vscode.window.showErrorMessage(err.message);
             }
@@ -126,8 +125,7 @@ class OdooBrowser {
     static goto() {
         let debug = vscode.window.createOutputChannel("OdooBrowser");
         debug.appendLine("Goto called");
-        var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
-        let rootPath = workspaceFolder.uri.path;
+        let rootPath = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
         let astPath = path.join(rootPath, '.odoo.ast');
         if (!fs.existsSync(astPath)) {
             vscode.window.showErrorMessage("Please create an AST File before.");

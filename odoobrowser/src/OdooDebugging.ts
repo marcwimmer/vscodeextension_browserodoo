@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { VSCodeTools, Tools } from './tools';
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
+import { posix } from 'path';
 
 export class OdooDebugging {
     public static register(context: any) {
@@ -97,9 +98,10 @@ export class OdooDebugging {
     }
 
     static setupLaunchJSON() {
-        var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
-        let root = workspaceFolder.uri.path;
-        var vscodePath = root + "/.vscode";
+        var vscodePath = posix.join(
+            VSCodeTools.getCurrentWorkspaceFolder(),
+            '.vscode'
+            );
         var launchJson = vscodePath + "/launch.json";
         if (!fs.existsSync(vscodePath)) {
             fs.mkdirSync(vscodePath);
