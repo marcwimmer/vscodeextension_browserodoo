@@ -7,4 +7,6 @@ git tag -f VERSION
 git push --tags
 
 # to MS marketplace
+increase version in package.json
+vsce package
 vsce publish
