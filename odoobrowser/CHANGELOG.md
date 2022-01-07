@@ -4,6 +4,10 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.36]
+
+- searching odoo bin in path (pip wodoo compatible)
+
 ## [0.0.32]
 
 - using MANIFEST as root not workspace root
