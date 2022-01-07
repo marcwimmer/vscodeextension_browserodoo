@@ -27,18 +27,27 @@ class Tools {
     static getPreviewScript() {
         return path.join(Tools.getExtensionRootFolder(), 'out/preview_fzf.py');
     }
+    static getBinFromPath(binName) {
+        var paths = process.env['PATH'].split(":");
+        for (var i = 0; i < paths.length; i += 1) {
+            var searchPath = paths[i];
+            var odooBin = searchPath + path.sep + 'odoo';
+            if (fs.existsSync(odooBin)) {
+                return odooBin;
+            }
+        }
+        return null;
+    }
     static getOdooFrameworkBin() {
         const candidates = [
             "~/odoo/odoo",
             "/opt/odoo/odoo"
         ];
         // search search path otherwise
-        process.env['PATH'].split(":").forEach((searchPath) => {
-            var odooBin = searchPath + path.sep + 'odoo';
-            if (fs.existsSync(odooBin)) {
-                return odooBin;
-            }
-        });
+        var bin = Tools.getBinFromPath('odoo');
+        if (bin) {
+            return bin;
+        }
         for (let candidate of candidates) {
             if (fs.existsSync(candidate)) {
                 return candidate;
