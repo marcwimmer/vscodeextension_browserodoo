@@ -32,9 +32,23 @@ class Tools {
             "~/odoo/odoo",
             "/opt/odoo/odoo"
         ];
+        // search search path otherwise
+        process.env['PATH'].split(":").forEach((searchPath) => {
+            var odooBin = searchPath + path.sep + 'odoo';
+            if (fs.existsSync(odooBin)) {
+                return odooBin;
+            }
+        });
         for (let candidate of candidates) {
             if (fs.existsSync(candidate)) {
                 return candidate;
+            }
+        }
+        // search search path otherwise
+        for (var searchpath in process.env['PATH'].split(":")) {
+            var odooBin = searchpath + path.sep + 'odoo';
+            if (fs.existsSync(odooBin)) {
+                return odooBin;
             }
         }
         vscode.window.showErrorMessage("Odoo framework not found: " + candidates);
@@ -48,7 +62,7 @@ class Tools {
         let current = relFilepath;
         while (true) {
             current = path.dirname(current);
-            if (fs.existsSync(current + "/__manifest__.py")) {
+            if (fs.existsSync(current + "/__manifest__.py") || fs.existsSync(current + "/__openerp__.py")) {
                 if (returnPath) {
                     return current;
                 }
