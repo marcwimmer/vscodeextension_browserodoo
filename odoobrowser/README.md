@@ -18,6 +18,8 @@ ODOO_PYTHON_DEBUG_PORT=5678
 
 * add .vscode/launch.json configuration to your project (pretty straight forward if you choose python attach to remote):
 
+*Dont  forget to update the pathMappings!*
+
 ```yml
 {
 	"configurations": [
@@ -32,7 +34,7 @@ ODOO_PYTHON_DEBUG_PORT=5678
 			"pathMappings": [
 				{
 					"localRoot": "${workspaceFolder}",
-					"remoteRoot": "."
+					"remoteRoot": "/opt/src"
 				}
 			]
 		}
