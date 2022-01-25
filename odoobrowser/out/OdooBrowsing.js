@@ -166,6 +166,7 @@ class OdooBrowser {
             yield vscode.commands.executeCommand('copyFilePath');
             let folder = yield vscode.env.clipboard.readText(); // returns a string
             if (!folder || !folder.length) {
+                vscode.window.showErrorMessage("No Folder found by copyFilePath.");
                 return;
             }
             const workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
@@ -185,7 +186,6 @@ class OdooBrowser {
             let command = odooBin + " make-module  --name " + moduleName + " -p " + folder;
             tools_1.Tools.execCommand(command, "Make new module: " + moduleName);
             //theia.workspace.openTextDocument(resource);
-            // get current version
         }))();
     }
 }
