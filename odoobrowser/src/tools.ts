@@ -194,11 +194,14 @@ export class VSCodeTools {
         return vscode.window.activeTextEditor.selection.active.line;
     }
 
+
     public static getCurrentWorkspaceFolder() {
         if (vscode.window.activeTextEditor === undefined) {
             return;
         }
         var check = vscode.window.activeTextEditor.document.uri.path;
+
+
         while (!fs.existsSync(posix.join(check, 'MANIFEST'))) {
             check = dirname(check);
             if (check === '/') {
