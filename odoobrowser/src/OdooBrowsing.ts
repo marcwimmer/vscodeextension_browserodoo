@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2023 
+ *   All rights reserved.
+ */
 import * as vscode from 'vscode';
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
 import * as path from 'path'; // In NodeJS: 'const fs = require('fs')'

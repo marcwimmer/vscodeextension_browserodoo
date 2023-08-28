@@ -2,6 +2,7 @@ import { exec } from 'child_process';
 import * as vscode from 'vscode';
 import * as path from 'path'; // In NodeJS: 'const fs = require('fs')'
 import * as fs from 'fs'; // In NodeJS: 'const fs = require('fs')'
+import * as os from 'os'; // In NodeJS: 'const fs = require('fs')'
 import { dirname, posix, relative, basename } from 'path';
 
 export class Tools {
@@ -30,10 +31,19 @@ export class Tools {
         );
     }
 
+    public static resolveHome(filepath: string) {
+        if (filepath[0] === '~') {
+            let homedir = os.homedir()
+            return path.join(homedir, filepath.slice(1));
+        }
+        return filepath;
+    }
+
     public static getBinFromPath(binName: string) {
         var paths = process.env['PATH'].split(":");
         for (var i = 0; i < paths.length; i += 1) {
             var searchPath = paths[i];
+            searchPath = Tools.resolveHome(searchPath);
             var odooBin = searchPath + path.sep + 'odoo';
             if (fs.existsSync(odooBin)) {
                 return odooBin;
@@ -43,18 +53,23 @@ export class Tools {
         return null;
     }
 
+
+
     public static getOdooFrameworkBin() {
         const candidates = [
             "~/odoo/odoo",
-            "/opt/odoo/odoo"
+            "/opt/odoo/odoo",
+            "~/.local/sbin/odoo",
+            "~/.local/bin/odoo",
         ];
-        
+
         // search search path otherwise
         var bin = Tools.getBinFromPath('odoo');
         if (bin) {
             return bin;
         }
         for (let candidate of candidates) {
+            candidate = Tools.resolveHome(candidate);
             if (fs.existsSync(candidate)) {
                 return candidate;
             }
@@ -121,6 +136,9 @@ export class Tools {
 	}
 
     public static hasOdooManifest(workspaceFolder: string): boolean {
+        if (workspaceFolder === null || workspaceFolder === undefined) {
+            return false;
+        }
 		const manifestFilePath = path.join(
             workspaceFolder,
             "MANIFEST"

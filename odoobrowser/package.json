@@ -6,7 +6,7 @@
     "url": "https://git.clear-consulting.de/marc/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.42",
+  "version": "0.0.47",
   "publisher": "MarcWimmerITE",
   "engines": {
     "vscode": "^1.54.0"

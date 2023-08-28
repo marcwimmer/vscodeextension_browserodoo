@@ -10,6 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OdooBrowser = void 0;
+/*
+ *   Copyright (c) 2023
+ *   All rights reserved.
+ */
 const vscode = require("vscode");
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
 const path = require("path"); // In NodeJS: 'const fs = require('fs')'

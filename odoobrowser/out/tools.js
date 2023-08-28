@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2023
+ *   All rights reserved.
+ */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VSCodeTools = exports.Tools = void 0;
@@ -5,6 +9,7 @@ const child_process_1 = require("child_process");
 const vscode = require("vscode");
 const path = require("path"); // In NodeJS: 'const fs = require('fs')'
 const fs = require("fs"); // In NodeJS: 'const fs = require('fs')'
+const os = require("os"); // In NodeJS: 'const fs = require('fs')'
 const path_1 = require("path");
 class Tools {
     static getExtensionRootFolder() {
@@ -27,10 +32,18 @@ class Tools {
     static getPreviewScript() {
         return path.join(Tools.getExtensionRootFolder(), 'out/preview_fzf.py');
     }
+    static resolveHome(filepath) {
+        if (filepath[0] === '~') {
+            let homedir = os.homedir();
+            return path.join(homedir, filepath.slice(1));
+        }
+        return filepath;
+    }
     static getBinFromPath(binName) {
         var paths = process.env['PATH'].split(":");
         for (var i = 0; i < paths.length; i += 1) {
             var searchPath = paths[i];
+            searchPath = Tools.resolveHome(searchPath);
             var odooBin = searchPath + path.sep + 'odoo';
             if (fs.existsSync(odooBin)) {
                 return odooBin;
@@ -41,7 +54,9 @@ class Tools {
     static getOdooFrameworkBin() {
         const candidates = [
             "~/odoo/odoo",
-            "/opt/odoo/odoo"
+            "/opt/odoo/odoo",
+            "~/.local/sbin/odoo",
+            "~/.local/bin/odoo",
         ];
         // search search path otherwise
         var bin = Tools.getBinFromPath('odoo');
@@ -49,6 +64,7 @@ class Tools {
             return bin;
         }
         for (let candidate of candidates) {
+            candidate = Tools.resolveHome(candidate);
             if (fs.existsSync(candidate)) {
                 return candidate;
             }
@@ -100,6 +116,9 @@ class Tools {
         return path.join(workspaceFolder, '.selected');
     }
     static hasOdooManifest(workspaceFolder) {
+        if (workspaceFolder === null || workspaceFolder === undefined) {
+            return false;
+        }
         const manifestFilePath = path.join(workspaceFolder, "MANIFEST");
         if (!fs.existsSync(manifestFilePath)) {
             return false;
