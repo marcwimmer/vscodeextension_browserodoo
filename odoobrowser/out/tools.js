@@ -1,7 +1,3 @@
-/*
- *   Copyright (c) 2023
- *   All rights reserved.
- */
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VSCodeTools = exports.Tools = void 0;

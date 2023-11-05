@@ -4,6 +4,10 @@ All notable changes to the "odoobrowser" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.47]
+
+- find topmost MANIFEST
+
 ## [0.0.36]
 
 - searching odoo bin in path (pip wodoo compatible)
