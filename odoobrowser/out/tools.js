@@ -170,13 +170,16 @@ class VSCodeTools {
             return;
         }
         var check = vscode.window.activeTextEditor.document.uri.path;
-        while (!fs.existsSync(path_1.posix.join(check, 'MANIFEST'))) {
-            check = path_1.dirname(check);
-            if (check === '/') {
-                return null;
+        var candidate = null;
+        var MANIFEST_PATH = null;
+        while (check !== '/') {
+            MANIFEST_PATH = path_1.posix.join(check, "MANIFEST");
+            if (fs.existsSync(MANIFEST_PATH)) {
+                candidate = check;
             }
+            check = path_1.dirname(check);
         }
-        return check;
+        return candidate;
     }
     static getAbsoluteRootPath() {
         var workspaceFolder = this.getCurrentWorkspaceFolder();

@@ -219,14 +219,17 @@ export class VSCodeTools {
         }
         var check = vscode.window.activeTextEditor.document.uri.path;
 
+        var candidate = null;
+        var MANIFEST_PATH = null;
 
-        while (!fs.existsSync(posix.join(check, 'MANIFEST'))) {
-            check = dirname(check);
-            if (check === '/') {
-                return null;
+        while (check !== '/') {
+            MANIFEST_PATH = posix.join(check, "MANIFEST");
+            if (fs.existsSync(MANIFEST_PATH)) {
+                candidate = check;
             }
+            check = dirname(check);
         }
-        return check;
+        return candidate;
     }
 
     public static getAbsoluteRootPath() {
