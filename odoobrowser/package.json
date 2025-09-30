@@ -28,6 +28,10 @@
       },
     "commands": [
       {
+        "command": "odoobrowser.toggleRoboSnippetMode",
+        "title": "Odoo Toggle RoboSnippet Mode"
+      },
+      {
        "command": "odoobrowser.newModule",
        "title": "Odoo New Module"
       },
