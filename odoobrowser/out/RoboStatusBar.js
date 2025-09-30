@@ -21,13 +21,8 @@ class RoboStatusBar {
         context.subscriptions.push(statusBarItem);
     }
     static updateStatusBarItem(item) {
-        const snippetMode = this.getSectionInfo("SNIPPET_MODE");
+        const snippetMode = this.getSectionInfo("robotcode.robot", "env", "SNIPPET_MODE");
         item.text = "SNIPPETMODE: " + snippetMode;
-    }
-    static getFilecontent() {
-        // Read the settings.json file
-        const settings = vscode.workspace.getConfiguration();
-        return settings;
     }
     static async setConfigValue(section1, section2, key, value) {
         const cfg = vscode.workspace.getConfiguration(section1);
@@ -50,13 +45,11 @@ class RoboStatusBar {
         const current = env[key] ?? "0";
         await this.setConfigValue(section1, section2, key, current === "1" ? "0" : "1");
     }
-    static getSectionInfo(name) {
-        const settings = this.getFilecontent();
-        // Check if "robotcode.robot.env" exists
-        if (!settings["robotcode.robot.env"]) {
-            return;
-        }
-        return settings['robotcode.robot.env']['SNIPPET_MODE'];
+    static getSectionInfo(section1, section2, key) {
+        const cfg = vscode.workspace.getConfiguration(section1);
+        const env = cfg.get(section2, {});
+        const current = env[key] ?? "0";
+        return current;
     }
 }
 exports.RoboStatusBar = RoboStatusBar;
