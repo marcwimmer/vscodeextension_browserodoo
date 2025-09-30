@@ -1,10 +1,7 @@
 # Odoo-Browser
 
 * requires wodoo installed:
-
-```bash
-pip3 install wodoo
-```
+https://github.com/Odoo-Ninjas/zodoo
 
 ## Debugging odoo
 
