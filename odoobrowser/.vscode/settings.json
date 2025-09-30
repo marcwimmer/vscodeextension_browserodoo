@@ -8,12 +8,9 @@
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
-<<<<<<< HEAD
     "git.ignoreLimitWarning": true,
     "workbench.colorCustomizations": {
         "titleBar.activeBackground": "#b65f77"
-    }
-=======
+    },
     "git.ignoreLimitWarning": true
->>>>>>> 34e3e8964f1dda7a6ef784c6b846e3055b26dfba
 }

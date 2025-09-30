@@ -181,7 +181,7 @@ export class VSCodeTools {
         return document.getText().trim();
     }
 
-	public static editFile(path: string, lineNo: number) { 
+	public static editFile(path: string, lineNo: number) {
 		const uri = vscode.Uri.file(path);
 		vscode.commands.executeCommand<vscode.TextDocumentShowOptions>("vscode.open", uri);
 

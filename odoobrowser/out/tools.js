@@ -9,8 +9,7 @@ const os = require("os"); // In NodeJS: 'const fs = require('fs')'
 const path_1 = require("path");
 class Tools {
     static getExtensionRootFolder() {
-        var _a, _b;
-        return (_b = (_a = vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')) === null || _a === void 0 ? void 0 : _a.extensionPath) !== null && _b !== void 0 ? _b : "";
+        return vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')?.extensionPath ?? "";
     }
     static execCommand(cmd, msgOk) {
         var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
