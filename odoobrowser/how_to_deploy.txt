@@ -10,3 +10,10 @@ git push --tags
 increase version in package.json
 vsce package
 vsce publish
+
+# just create the vsix file
+increase version in package.json
+vsce package
+
+Installation in code server:
+code --install-extension <path to file>
