@@ -6,7 +6,7 @@
     "url": "https://github.com/marcwimmer/vscodeextension_browserodoo"
 
   },
-  "version": "0.0.49",
+  "version": "0.0.50",
   "publisher": "MarcWimmerITE",
   "engines": {
     "vscode": "^1.54.0"

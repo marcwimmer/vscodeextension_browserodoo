@@ -15,7 +15,7 @@ class RoboStatusBar {
         context.subscriptions.push(vscode.commands.registerCommand("odoobrowser.toggleRoboSnippetMode", () => {
             this.toggleConfigValue("robotcode.robot", "env", "SNIPPET_MODE");
             this.updateStatusBarItem(statusBarItem);
-            vscode.window.showInformationMessage("Hello1 from your VS Code extension!");
+            // vscode.window.showInformationMessage("Hello1 from your VS Code extension!");
         }));
         // Add to context to dispose when extension is deactivated
         context.subscriptions.push(statusBarItem);
