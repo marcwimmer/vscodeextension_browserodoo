@@ -116,9 +116,30 @@ export class Tools {
     }
 
     public static writeDebugFile(data: string) {
-        const buffer = Buffer.from(data, 'utf8');
-        const fileUri = vscode.Uri.parse(posix.join(VSCodeTools.getAbsoluteRootPath(), '.debug'));
-        vscode.workspace.fs.writeFile(fileUri, buffer);
+        const debugPath = path.join(VSCodeTools.getAbsoluteRootPath(), '.debug');
+        fs.writeFileSync(debugPath, data, 'utf8');
+    }
+
+    public static isDebugLoopActive(): Promise<boolean> {
+        const debugPath = path.join(VSCodeTools.getAbsoluteRootPath(), '.debug');
+        fs.writeFileSync(debugPath, 'debug_active?', 'utf8');
+        return new Promise((resolve) => {
+            const maxWait = 1500;
+            const interval = 100;
+            let elapsed = 0;
+            const timer = setInterval(() => {
+                elapsed += interval;
+                if (!fs.existsSync(debugPath)) {
+                    clearInterval(timer);
+                    resolve(true);
+                } else if (elapsed >= maxWait) {
+                    clearInterval(timer);
+                    // clean up unanswered probe
+                    try { fs.unlinkSync(debugPath); } catch {}
+                    resolve(false);
+                }
+            }, interval);
+        });
     }
 
 	public static readLines(path: string) {

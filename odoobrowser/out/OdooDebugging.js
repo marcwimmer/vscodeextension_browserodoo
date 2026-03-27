@@ -16,10 +16,18 @@ class OdooDebugging {
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.runLastUnittest", OdooDebugging.runLastUnittest));
         context.subscriptions.push(vscode.commands.registerCommand("odoo_debugcommand.exportI18n", OdooDebugging.exportI18n));
     }
-    static updateModule() {
+    static async updateModule() {
         const relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();
         const module = tools_1.Tools.getModuleOfFilePath(relCurrentFilename);
-        tools_1.Tools.writeDebugFile("update_module:" + module);
+        const debugActive = await tools_1.Tools.isDebugLoopActive();
+        if (debugActive) {
+            tools_1.Tools.writeDebugFile("update_module:" + module);
+        }
+        else {
+            const odooBin = tools_1.Tools.getOdooFrameworkBin();
+            const workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();
+            tools_1.Tools.execCommand("cd '" + workspaceFolder + "'; " + odooBin + " update " + module, "Module " + module + " updated");
+        }
     }
     static restart() {
         var relCurrentFilename = tools_1.VSCodeTools.getActiveRelativePath();

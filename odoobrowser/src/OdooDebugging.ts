@@ -55,10 +55,17 @@ export class OdooDebugging {
         );
     }
 
-	private static updateModule() {
+	private static async updateModule() {
         const relCurrentFilename = VSCodeTools.getActiveRelativePath();
         const module = Tools.getModuleOfFilePath(relCurrentFilename);
-        Tools.writeDebugFile("update_module:" + module);
+        const debugActive = await Tools.isDebugLoopActive();
+        if (debugActive) {
+            Tools.writeDebugFile("update_module:" + module);
+        } else {
+            const odooBin = Tools.getOdooFrameworkBin();
+            const workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
+            Tools.execCommand("cd '" + workspaceFolder + "'; " + odooBin + " update " + module, "Module " + module + " updated");
+        }
     }
 
     private static restart() {
