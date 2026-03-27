@@ -67,7 +67,7 @@ class OdooBrowser {
     static _updateAst(filename) {
         let odooBin = tools_1.Tools.getOdooFrameworkBin();
         let command = odooBin + " update-ast ";
-        if (filename && !filename.indexOf('.')) {
+        if (filename && filename.startsWith('.')) {
             return;
         }
         var workspaceFolder = tools_1.VSCodeTools.getCurrentWorkspaceFolder();

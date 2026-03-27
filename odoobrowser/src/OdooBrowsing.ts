@@ -110,7 +110,7 @@ export class OdooBrowser {
 	private static _updateAst(filename: string) {
         let odooBin = Tools.getOdooFrameworkBin();
         let command = odooBin + " update-ast ";
-        if (filename && !filename.indexOf('.')) {
+        if (filename && filename.startsWith('.')) {
             return;
         }
 

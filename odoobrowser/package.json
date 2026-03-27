@@ -1,162 +1,151 @@
 {
-  "name": "odoobrowserITE",
-  "displayName": "OdooBrowser",
-  "description": "Browser Odoo Models, XmlIds",
+  "name": "zebroo",
+  "displayName": "Zebroo",
+  "description": "Zebroo - Browse and debug Odoo models, views, and XmlIds",
   "repository": {
+    "type": "git",
     "url": "https://github.com/marcwimmer/vscodeextension_browserodoo"
-
   },
   "version": "0.0.50",
-  "publisher": "MarcWimmerITE",
+  "publisher": "Zebroo",
   "engines": {
     "vscode": "^1.54.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "menus": {
-        "explorer/context": [
-          {
-            "command": "odoobrowser.newModule",
-            "group": "navigation",
-            "when": "explorerResourceIsFolder"
-          }
-        ]
-      },
+      "explorer/context": [
+        {
+          "command": "odoobrowser.newModule",
+          "group": "navigation",
+          "when": "explorerResourceIsFolder"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "odoobrowser.toggleRoboSnippetMode",
-        "title": "Odoo Toggle RoboSnippet Mode"
+        "title": "Zebroo Toggle RoboSnippet Mode"
       },
-      {
-        "command": "odoobrowser.newModule",
-        "title": "Odoo New Module"
-      },
-      {
-        "command": "odoobrowser.goto",
-        "title": "Godoo [Goto]"
-      },
+      { "command": "odoobrowser.newModule", "title": "Zebroo New Module" },
+      { "command": "odoobrowser.goto", "title": "Godoo [Goto]" },
       {
         "command": "odoobrowser.gotoManifest",
-        "title": "Odoo Goto Module Manifest"
+        "title": "Zebroo Goto Module Manifest"
       },
-      {
-        "command": "odoobrowser.gotoMANIFEST",
-        "title": "Odoo Goto MANIFEST"
-      },
+      { "command": "odoobrowser.gotoMANIFEST", "title": "Zebroo Goto MANIFEST" },
       {
         "command": "odoobrowser.gotoInherited",
-        "title": "Odoo Goto Inherited View"
+        "title": "Zebroo Goto Inherited View"
       },
       {
         "command": "odoo_debugcommand.setupLaunchJSON",
-        "title": "Odoo Setup .vscode/launch.json for debugging"
+        "title": "Zebroo Setup .vscode/launch.json for debugging"
       },
       {
         "command": "odoo_debugcommand.updateModuleFile",
-        "title": "Odoo Update Module File"
+        "title": "Zebroo Update Module File"
       },
       {
         "command": "odoo_debugcommand.updateView",
-        "title": "Odoo Update View"
+        "title": "Zebroo Update View"
       },
       {
         "command": "odoo_debugcommand.updateModule",
-        "title": "Odoo Debug: Update Module"
+        "title": "Zebroo Debug: Update Module"
       },
       {
         "command": "odoo_debugcommand.runUnittest",
-        "title": "Odoo Debug: Run Unit Test"
+        "title": "Zebroo Debug: Run Unit Test"
       },
       {
         "command": "odoo_debugcommand.runLastUnittest",
-        "title": "Odoo Debug: Run Last Unit Test"
+        "title": "Zebroo Debug: Run Last Unit Test"
       },
       {
         "command": "odoo_debugcommand.restart",
-        "title": "Odoo Debug: Restart"
+        "title": "Zebroo Debug: Restart"
       },
       {
         "command": "odoo_debugcommand.updateView",
-        "title": "Odoo Debug: Update View"
+        "title": "Zebroo Debug: Update View"
       },
       {
         "command": "odoo_debugcommand.updateAstCurrentFile",
-        "title": "Odoo Debug: Update Ast Current File"
+        "title": "Zebroo Debug: Update Ast Current File"
       },
       {
         "command": "odoo_debugcommand.updateAstAll",
-        "title": "Odoo Debug: Update Ast All"
+        "title": "Zebroo Debug: Update Ast All"
       },
       {
         "command": "odoo_debugcommand.exportI18n",
-        "title": "Odoo Debug: Export I18N"
+        "title": "Zebroo Debug: Export I18N"
       },
       {
         "command": "odoo_debugcommand.runInConsole",
-        "title": "Odoo Run current file in Console"
+        "title": "Zebroo Run current file in Console"
       }
     ],
     "keybindings": [
       {
-          "command": "odoo_debugcommand.updateModuleFile",
-          "key": "ctrl+u ctrl+m ctrl+f",
-          "mac": "cmd+u cmd+m cmd+f"
+        "command": "odoo_debugcommand.updateModuleFile",
+        "key": "ctrl+u ctrl+m ctrl+f",
+        "mac": "cmd+u cmd+m cmd+f"
       },
       {
-          "command": "odoo_debugcommand.updateView",
-          "key": "ctrl+u ctrl+v",
-          "mac": "cmd+u cmd+v"
+        "command": "odoo_debugcommand.updateView",
+        "key": "ctrl+u ctrl+v",
+        "mac": "cmd+u cmd+v"
       },
       {
-          "command": "odoo_debugcommand.restart",
-          "key": "ctrl+o ctrl+r",
-          "mac": "cmd+o cmd+r"
+        "command": "odoo_debugcommand.restart",
+        "key": "ctrl+o ctrl+r",
+        "mac": "cmd+o cmd+r"
       },
       {
-          "command": "odoo_debugcommand.runUnittest",
-          "key": "ctrl+r ctrl+t",
-          "mac": "cmd+r cmd+t"
+        "command": "odoo_debugcommand.runUnittest",
+        "key": "ctrl+r ctrl+t",
+        "mac": "cmd+r cmd+t"
       },
       {
-          "command": "odoo_debugcommand.runLastUnittest",
-          "key": "ctrl+r ctrl+shift+t",
-          "mac": "cmd+r cmd+shift+t"
+        "command": "odoo_debugcommand.runLastUnittest",
+        "key": "ctrl+r ctrl+shift+t",
+        "mac": "cmd+r cmd+shift+t"
       },
       {
-          "command": "odoo_debugcommand.exportI18n",
-          "key": "ctrl+e ctrl+l",
-          "mac": "cmd+e cmd+l"
+        "command": "odoo_debugcommand.exportI18n",
+        "key": "ctrl+e ctrl+l",
+        "mac": "cmd+e cmd+l"
       },
       {
-          "command": "odoobrowser.goto",
-          "key": "ctrl+o ctrl+g",
-          "mac": "cmd+o cmd+g"
+        "command": "odoobrowser.goto",
+        "key": "ctrl+o ctrl+g",
+        "mac": "cmd+o cmd+g"
       },
       {
-          "command": "odoobrowser.gotoInherited",
-          "key": "ctrl+g ctrl+i",
-          "mac": "cmd+g cmd+i"
+        "command": "odoobrowser.gotoInherited",
+        "key": "ctrl+g ctrl+i",
+        "mac": "cmd+g cmd+i"
       },
       {
-          "command": "odoobrowser.gotoManifest",
-          "key": "ctrl+g ctrl+m",
-          "mac": "cmd+g cmd+m"
+        "command": "odoobrowser.gotoManifest",
+        "key": "ctrl+g ctrl+m",
+        "mac": "cmd+g cmd+m"
       },
       {
-          "command": "odoobrowser.gotoMANIFEST",
-          "key": "ctrl+g ctrl+shift+m",
-          "mac": "cmd+g cmd+shift+m"
+        "command": "odoobrowser.gotoMANIFEST",
+        "key": "ctrl+g ctrl+shift+m",
+        "mac": "cmd+g cmd+shift+m"
       }
     ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "tsc -p .",
+    "watch": "tsc -p . -w",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js"

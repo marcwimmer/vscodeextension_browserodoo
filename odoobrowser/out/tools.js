@@ -9,7 +9,7 @@ const os = require("os"); // In NodeJS: 'const fs = require('fs')'
 const path_1 = require("path");
 class Tools {
     static getExtensionRootFolder() {
-        return vscode.extensions.getExtension('marc-christianwimmer.odoobrowser')?.extensionPath ?? "";
+        return vscode.extensions.getExtension('Zebroo.zebroo')?.extensionPath ?? "";
     }
     static execCommand(cmd, msgOk) {
         var workspaceFolder = VSCodeTools.getCurrentWorkspaceFolder();
@@ -39,7 +39,7 @@ class Tools {
         for (var i = 0; i < paths.length; i += 1) {
             var searchPath = paths[i];
             searchPath = Tools.resolveHome(searchPath);
-            var odooBin = searchPath + path.sep + 'odoo';
+            var odooBin = searchPath + path.sep + binName;
             if (fs.existsSync(odooBin)) {
                 return odooBin;
             }
@@ -65,7 +65,7 @@ class Tools {
             }
         }
         // search search path otherwise
-        for (var searchpath in process.env['PATH'].split(":")) {
+        for (var searchpath of (process.env['PATH'] ?? '').split(":")) {
             var odooBin = searchpath + path.sep + 'odoo';
             if (fs.existsSync(odooBin)) {
                 return odooBin;
@@ -123,7 +123,13 @@ class Tools {
 }
 exports.Tools = Tools;
 class VSCodeTools {
-    static getActiveRelativePath(filename = vscode.window.activeTextEditor.document.fileName) {
+    static getActiveRelativePath(filename) {
+        if (!filename) {
+            if (!vscode.window.activeTextEditor) {
+                return '';
+            }
+            filename = vscode.window.activeTextEditor.document.fileName;
+        }
         const folderUri = VSCodeTools.getAbsoluteRootPath();
         var relCurrentFilename = path_1.relative(folderUri, filename);
         return relCurrentFilename;
@@ -145,12 +151,14 @@ class VSCodeTools {
         const document = editor.document;
         return document.getText().trim();
     }
-    static editFile(path, lineNo) {
+    static async editFile(path, lineNo) {
         const uri = vscode.Uri.file(path);
-        vscode.commands.executeCommand("vscode.open", uri);
+        await vscode.commands.executeCommand("vscode.open", uri);
         const editor = vscode.window.activeTextEditor;
-        const position = editor.selection.active;
-        var newPosition = position.with(lineNo, 0);
+        if (!editor) {
+            return;
+        }
+        var newPosition = new vscode.Position(lineNo, 0);
         var newSelection = new vscode.Selection(newPosition, newPosition);
         editor.selection = newSelection;
         vscode.commands.executeCommand('editor.action.goToLocations', uri, editor.selection.start, [
@@ -182,7 +190,7 @@ class VSCodeTools {
     }
     static getAbsoluteRootPath() {
         var workspaceFolder = this.getCurrentWorkspaceFolder();
-        if (workspaceFolder === null) {
+        if (!workspaceFolder) {
             vscode.window.showInformationMessage("No workspace folder selected.");
             return "";
         }

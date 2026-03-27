@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { OdooBrowser } from './OdooBrowsing';
 import { OdooDebugging } from './OdooDebugging';
 import { RoboStatusBar } from './RoboStatusBar';
-import { error } from 'console';
 
 export function deactivate() {}
 

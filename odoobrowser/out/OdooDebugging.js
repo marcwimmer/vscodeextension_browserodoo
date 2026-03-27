@@ -46,7 +46,8 @@ class OdooDebugging {
     static runInConsole() {
         const content = tools_1.VSCodeTools.getActiveFileContent();
         let odooBin = tools_1.Tools.getOdooFrameworkBin();
-        let command = "echo '" + content + "' | " + odooBin + " shell";
+        const escaped = content.replace(/'/g, "'\\''");
+        let command = "echo '" + escaped + "' | " + odooBin + " shell";
         const terminal = tools_1.VSCodeTools.ensureTerminalExists('console');
         terminal.sendText(command, true);
         terminal.show(true);
